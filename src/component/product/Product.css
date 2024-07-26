@@ -1,0 +1,394 @@
+.layout-productDetail {
+    margin-bottom: 55px;
+}
+
+.breadcrumb-shop {
+    background: var(--shop-color-bg);
+    padding: 0 0px;
+}
+
+.breadcrumb-list {
+    overflow: hidden;
+}
+
+.breadcrumb-list .breadcrumb-arrows {
+    font-size: 13px;
+    padding: 9px 0;
+    background: transparent;
+    border-radius: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.breadcrumb {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    padding: .75rem 1rem;
+    margin-bottom: 1rem;
+    list-style: none;
+    background-color: #e9ecef;
+    border-radius: .25rem;
+}
+
+.breadcrumb-list .breadcrumb-arrows > li a {
+    color: var(--shop-color-text);
+}
+
+.breadcrumb-list .breadcrumb-arrows > li + li::before {
+    padding: 0 3px;
+    margin-left: 5px;
+    color: #ccc;
+    font-family: 'FontAwesome';
+    content: "/\00a0";
+}
+
+.breadcrumb-list .breadcrumb-arrows > li {
+    display: inline-block;
+}
+
+.productDetail--main {
+    display: flex;
+    display: -ms-flex;
+    flex-wrap: wrap;
+    -ms-flex-wrap: wrap;
+}
+
+.productDetail--gallery {
+    width: 55%;
+}
+
+.stickyProduct-gallery {
+    background: #fff;
+    top: 30px;
+    position: sticky;
+    -webkit-transition: top 400ms ease;
+    -moz-transition: top 400ms ease;
+    transition: top 400ms ease;
+}
+
+.product-container-gallery {
+    padding: 15px 15px 15px 5px;
+}
+
+.wrapbox-gallery {
+    position: relative;
+}
+
+.wrapbox-image-verticalSlide {
+    display: flex;
+    border-radius: 4px;
+}
+
+.productGallery_slider {
+    width: calc(100% - 85px);
+    position: relative;
+    background: pink;
+}
+
+.productDetail--content {
+    width: 45%;
+    padding-left: 15px;
+}
+
+.wrapbox-detail {
+    padding: 0 15px;
+    background: #fff;
+}
+
+.productDetail--content .wrapbox-detail > [class*="product-"] {
+    margin-bottom: 15px;
+}
+
+.productDetail--content .product-heading {
+    padding-top: 15px;
+}
+
+.productDetail--content .product-heading h1 {
+    font-size: 24px;
+    margin-bottom: 5px;
+}
+
+.productDetail--content .wrapbox-detail > [class*="product-"] {
+    margin-bottom: 15px;
+}
+
+.productDetail--content .product-price {
+    border-radius: 4px;
+    display: flex;
+    display: -ms-flex;
+    align-items: center;
+    -ms-align-items: center;
+}
+
+.productDetail--content .product-price span.pro-price {
+    font-size: 28px;
+    font-weight: 600;
+    color: #000000;
+    padding-right: 10px;
+}
+
+.productDetail--content .product-variants .select-swatch .swatch {
+    margin-top: 15px;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-flex-wrap: nowrap;
+    -ms-flex-wrap: nowrap;
+    flex-wrap: nowrap;
+}
+
+.productDetail--content .product-variants .select-swatch .swatch .title-swap {
+    width: 20%;
+    font-weight: 600;
+    margin-bottom: 5px;
+    padding-left: 15px;
+}
+
+.productDetail--content .product-variants .select-swatch .swatch .title-swap strong {
+    font-size: 85%;
+    display: block;
+    color: #4ea8cd;
+    line-height: 1.1;
+    padding-bottom: 3px;
+}
+
+strong {
+    font-weight: 700;
+}
+
+.productDetail--content .product-variants .select-swatch .swatch .select-swap {
+    width: 72%;
+    display: flex;
+    display: -ms-flex;
+    flex-wrap: wrap;
+    -ms-flex-wrap: wrap;
+    align-items: center;
+    -ms-align-items: center
+}
+
+.productDetail--content .product-variants .select-swatch .swatch .swatch-element {
+    display: inline-block;
+    margin: 0 8px 8px 0;
+    border-radius: 3px;
+    position: relative;
+    vertical-align: bottom;
+}
+
+.productDetail--content .product-variants .select-swatch .swatch .swatch-element label.sd::after {
+    position: absolute;
+    content: "";
+    width: 19px;
+    height: 19px;
+    right: -1px;
+    top: -1px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg%3E%3Cg%3E%3Cg%3E%3Cg%3E%3Cg%3E%3Cg%3E%3Cg%3E%3Cpath fill='%23fffff' d='M0 0h16c2.21 0 4 1.79 4 4v16L0 0z' transform='translate(-804 -366) translate(180 144) translate(484 114) translate(16 80) translate(0 28) translate(124)'/%3E%3Cg fill='%23FFF'%3E%3Cpath d='M4.654 7.571L8.88 3.176c.22-.228.582-.235.81-.016.229.22.236.582.017.81L5.04 8.825c-.108.113-.258.176-.413.176-.176 0-.33-.076-.438-.203L2.136 6.37c-.205-.241-.175-.603.067-.808.242-.204.603-.174.808.068L4.654 7.57z' transform='translate(-804 -366) translate(180 144) translate(484 114) translate(16 80) translate(0 28) translate(124) translate(7.5)'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3C/g%3E%3C/g%3E%3C/g%3E%3C/g%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
+.productDetail--content .product-variants .select-swatch .swatch .swatch-element label.sd::before {
+    position: absolute;
+    content: "";
+    width: 0;
+    height: 0;
+    right: -1px;
+    top: -1px;
+    border-style: solid;
+    border-width: 0px 19px 19px 0px;
+    border-color: transparent var(--shop-color-main) transparent transparent;
+}
+
+.productDetail--content .product-variants .select-swatch .swatch .swatch-element label.sd {
+    color: var(--shop-color-main);
+    background: #ffff;
+    border: 1px solid var(--shop-color-main);
+}
+
+.productDetail--content .product-variants .select-swatch .swatch .swatch-element label {
+    position: relative;
+    display: block;
+    margin: 0;
+    padding: 7px 10px;
+    min-width: 70px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--shop-color-title);
+    background-color: #fff;
+    border: 1px solid #bdbfbe;
+    border-radius: 4px;
+    text-align: center;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.productDetail--content .product-actions {
+    width: 100%;
+}
+
+.productDetail--content .product-actions .select-actions {
+    flex-wrap: wrap;
+}
+
+@media (min-width: 992px) {
+    .d-lg-flex {
+        display: -ms-flexbox !important;
+        display: flex !important;
+    }
+}
+
+.productDetail--content .product-actions .select-actions .quantity-area {
+    display: flex;
+    display: -ms-flex;
+    align-items: center;
+    -ms-align-items: center;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.productDetail--content .product-actions .select-actions .quantity-area .quantity-title {
+    width: 100%;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.productDetail--content .product-actions .select-actions .quantity-area .box-qtt {
+    flex: 0 0 50%;
+    max-width: 50%;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.productDetail--content .product-actions .select-actions .quantity-area .quantity-input {
+    background: #fff;
+    font-weight: 600;
+    height: 40px;
+    line-height: 40px;
+    width: 40px;
+    padding: 0;
+    text-align: center;
+    border: none;
+    float: left;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    -o-appearance: none;
+    appearance: none;
+    font-size: 18px;
+    text-decoration: underline;
+}
+
+.productDetail--content .product-actions .select-actions .quantity-area .qty-btn {
+    float: left;
+    background: #fff;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 16px;
+    outline: none;
+    height: 40px;
+    line-height: 40px;
+    width: 10px;
+    text-align: center;
+    border-radius: 0;
+    outline: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    -o-appearance: none;
+    appearance: none;
+}
+
+[type="button"]:not(:disabled), [type="reset"]:not(:disabled), [type="submit"]:not(:disabled), button:not(:disabled) {
+    cursor: pointer;
+}
+
+.productDetail--content .product-actions .select-actions .quantity-area > .addcart-area {
+    flex: 0 0 50%;
+    max-width: 50%;
+}
+
+.productDetail--content .product-actions .select-actions .addcart-area {
+    display: flex;
+    display: -ms-flex;
+    margin-top: 15px;
+    width: 100%;
+}
+
+.productDetail--content .product-actions .select-actions .addcart-area .btn-addtocart::before {
+    background: #fff;
+    color: #000;
+}
+
+.button::before {
+    content: '';
+    display: block;
+    background-color: var(--shop-color-hover);
+    position: absolute;
+    left: -10%;
+    top: -10%;
+    bottom: -10%;
+    width: 0;
+    z-index: -1;
+    -webkit-transform: skewX(15deg);
+    -ms-transform: skewX(15deg);
+    transform: skewX(15deg);
+    -webkit-transition: width 0.45s cubic-bezier(0.785, 0.135, 0.15, 0.86);
+    -ms-transition: width 0.45s cubic-bezier(0.785, 0.135, 0.15, 0.86);
+    transition: width 0.45s cubic-bezier(0.785, 0.135, 0.15, 0.86);
+}
+[type="button"]::-moz-focus-inner, [type="reset"]::-moz-focus-inner, [type="submit"]::-moz-focus-inner, button::-moz-focus-inner {
+    padding: 0;
+    border-style: none;
+}
+::after, ::before {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+.productDetail--content .product-actions .select-actions .addcart-area .btn-addtocart::before {
+    background: #fff;
+    color: #000;
+}
+@media (min-width: 992px) {
+    .button:hover::before, .button:focus::before {
+        width: 120%;
+    }
+}
+.button::before {
+    content: '';
+    display: block;
+    background-color: var(--shop-color-hover);
+    position: absolute;
+    left: -10%;
+    top: -10%;
+    bottom: -10%;
+    width: 0;
+    z-index: -1;
+    -webkit-transform: skewX(15deg);
+    -ms-transform: skewX(15deg);
+    transform: skewX(15deg);
+    -webkit-transition: width 0.45s cubic-bezier(0.785, 0.135, 0.15, 0.86);
+    -ms-transition: width 0.45s cubic-bezier(0.785, 0.135, 0.15, 0.86);
+    transition: width 0.45s cubic-bezier(0.785, 0.135, 0.15, 0.86);
+}
+.add-to-cartProduct button dark btn-addtocart addtocart-modal{
+    padding: 0;
+    border-style: none;
+    content: '';
+    display: block;
+    background-color: var(--shop-color-hover);
+    position: absolute;
+    left: -10%;
+    top: -10%;
+    bottom: -10%;
+    width: 0;
+    z-index: -1;
+    -webkit-transform: skewX(15deg);
+    -ms-transform: skewX(15deg);
+    transform: skewX(15deg);
+    -webkit-transition: width 0.45s cubic-bezier(0.785, 0.135, 0.15, 0.86);
+    -ms-transition: width 0.45s cubic-bezier(0.785, 0.135, 0.15, 0.86);
+    transition: width 0.45s cubic-bezier(0.785, 0.135, 0.15, 0.86);
+}

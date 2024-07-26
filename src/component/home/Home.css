@@ -1,0 +1,212 @@
+.main-content {
+    width: 100%;
+    height: auto;
+
+}
+
+.main-content .slider-container {
+    width: 100%;
+    height: auto;
+    max-height: 350px;
+    padding: 0;
+    margin: 0;
+}
+
+.slick-slide img {
+    width: 100%;
+    height: auto;
+
+    object-fit: fill;
+}
+.product{
+    padding-bottom: 70px;
+    margin-top: 50px;
+}
+.container{
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
+}
+.product-head{
+    display: flex;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+.title{
+    text-align: left;
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0;
+}
+.nav{
+    display: flex;
+
+    flex-wrap: wrap;
+    padding-left: 0;
+    margin-bottom: 0;
+    list-style: none;
+}
+.product-item{
+    margin-left: 15px;
+
+}
+.product .container .list-product .product-menu .nav-link.active{
+    color: #000;
+    background: var(--shop-color-main);
+    border: 1px solid var(--shop-color-main);
+}
+.product .container .list-product .product-menu .nav-link{
+    position: relative;
+    font-size: 15px;
+    font-weight: 500;
+    color: #000;
+    padding: 5px 20px;
+    background: #fff;
+    border-radius: 25px;
+    border: 1px solid #000;
+}
+.nav-link{
+    display: block;
+}
+.product-detail{
+    text-align: left;
+}
+.product-list {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr); /* 6 cột */
+    grid-gap: 15px; /* Khoảng cách giữa các ô */
+}
+
+.product-items {
+
+    border: 1px solid #ddd; /* Viền cho các ô sản phẩm */
+    padding: 15px; /* Khoảng cách bên trong các ô sản phẩm */
+    text-align: center; /* Căn giữa nội dung */
+    position: relative;
+    overflow: hidden;
+    -webkit-transition: all 400ms ease;
+    -moz-transition: all 400ms ease;
+    -ms-transition: all 400ms ease;
+    -o-transition: all 400ms ease;
+    transition: all 400ms ease;
+    background: #fff;
+    height: 100%;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.08);
+    border-radius: 4px;
+}
+.product-image{
+    position: relative;
+    overflow: hidden;
+    padding: 3px;
+}
+.image{
+    position: relative;
+    width: 100%;
+    height: 0;
+    flex: 0 0 100%;
+    -ms-flex: 0 0 100%;
+    padding-bottom: 110%;
+    -webkit-transition: all 500ms ease;
+    -moz-transition: all 500ms ease;
+    -ms-transition: all 500ms ease;
+    -o-transition: all 500ms ease;
+    transition: all 500ms ease;
+}
+.title-pr{
+    font-size: 14px;
+    margin: 0 0 5px;
+    font-weight: 700;
+}
+.quickview-product{
+    color: var(--shop-color-text);
+    white-space: initial;
+    overflow: hidden;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    display: -webkit-box;
+
+}
+.proloop--variant{
+    font-size: 12px;
+    padding-bottom: 5px;
+    font-weight: 500;
+    color: #787c7c;
+}
+.proloop--price{
+    margin-top: auto;
+    padding-bottom: 15px;
+    font-weight: 600;
+    font-size: 14px;
+    color: #333;
+}
+.price{
+    color: #ebb0ba;
+    margin-right: 4px;
+    display: block;
+}
+
+.proloop-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Khoảng cách giữa nút và văn bản */
+}
+
+.btn-cart {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px; /* Đường kính của nút */
+    height: 40px; /* Đường kính của nút */
+    border-radius: 50%; /* Tạo hình tròn */
+    background-color: #000; /* Màu nền của nút */
+    border: none; /* Xóa viền mặc định */
+    color: #fff; /* Màu của icon */
+    font-size: 18px; /* Kích thước của icon */
+    cursor: pointer; /* Con trỏ chuột khi di chuột vào nút */
+    transition: background-color 0.3s; /* Hiệu ứng chuyển màu nền khi di chuột vào nút */
+}
+
+.btn-cart:hover {
+    background-color: #333; /* Màu nền khi di chuột vào nút */
+}
+
+.cart-icon::before {
+    content: "\f07a"; /* Mã icon giỏ hàng (dùng Font Awesome) */
+    font-family: 'FontAwesome'; /* Sử dụng Font Awesome để hiển thị icon */
+}
+
+.btn-text {
+    font-size: 14px; /* Kích thước của văn bản */
+    color: #000; /* Màu văn bản */
+}
+.footer {
+    background-color: #f8c0c0; /* Màu hồng */
+    color: #333; /* Màu chữ */
+    text-align: center; /* Căn giữa văn bản */
+    padding: 50px; /* Khoảng cách bên trong */
+    position: absolute;
+
+    width: 100%; /* Đảm bảo footer bao phủ toàn bộ chiều rộng của trang */
+}
+
+.footer-text {
+    margin: 0;
+;font-weight: 600;
+    font-size: 14px;
+    color: #333; /* Kích thước chữ */
+}
+
