@@ -1,0 +1,210 @@
+.row{
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    margin-right: -15px;
+    margin-left: -15px;
+}
+.col-lg-8{
+    flex: 0 0 66.666667%;
+    max-width: 66.666667%;
+}
+.mainCart-detail{
+    background: #fff;
+    border-radius: 4px;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.08);
+    margin-bottom: 50px;
+}
+.heading-row {
+    border-bottom: 0;
+    flex-wrap: wrap;
+}
+.heading-cart {
+    border-bottom: 1px solid var(--shop-color-border);
+    padding: 20px 15px;
+    display: flex;
+    display: -ms-flex;
+    display: -webkit-flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.heading-cart  h1{
+    font-size: 20px;
+    margin: 0;
+}
+.list-pageform-cart{
+    padding: 15px;
+}
+.cart-row{
+    width: 100%;
+    display: inline-block;
+}
+.table-cart {
+    padding: 8px 10px;
+    border: 2px solid var(--shop-color-border);
+    overflow: hidden;
+    border-radius: 8px;
+}
+.cart-item{
+    position: relative;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-direction: row;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    -webkit-justify-content: space-between;
+    justify-content: space-between;
+    padding: 15px 10px;
+
+}
+.media-left {
+    -ms-flex: 0 0 80px;
+    flex: 0 0 80px;
+    max-width: 80px;
+    padding: 0;
+    position: relative;
+    display: block;
+}
+.media-left img{
+    border: 1px solid #ededed;
+}
+.item-remove {
+    position: absolute;
+    top: -7px;
+    left: -10px;
+}
+.item-remove a {
+    display: block;
+    background: #8f9bb3;
+    color: #fff;
+    font-size: 8px;
+    font-weight: 400;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    text-align: center;
+    border-radius: 50%;
+}
+.media-right {
+    flex: 1 1 auto;
+    padding-left: 18px;
+    padding-right: 18px;
+}
+.item-info {
+    margin-bottom: 10px;
+}
+.item-title {
+    font-size: 15px;
+    margin: 0 0 2px;
+    font-weight: 500;
+}
+.item-title a {
+    color: var(--shop-color-text);
+    overflow: hidden;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    display: -webkit-box;
+}
+.item-price p {
+    margin: 0;
+}
+.item-price span {
+    font-size: 16px;
+    font-weight: 700;
+}
+.media-total {
+    text-align: right;
+}
+.item-quantity{
+
+    display: inline-block;
+}
+.quantity-partent {
+    margin: 8px 0 3px;
+    display: flex;
+    -ms-display: flex;
+    -webkit-display: flex;
+    width: 100%;
+}
+.qty-btn {
+
+        float: left;
+        font-weight: 500;
+        padding: 0;
+        height: 28px;
+        width: 28px;
+        text-align: center;
+        background: #f9f9f9;
+        color: var(--shop-color-text);
+        border: 1px solid #f3f4f4;
+
+        border-right-color: rgb(243, 244, 244);
+        border-radius: 0px;
+        outline: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        -o-appearance: none;
+        appearance: none;
+
+}
+.qty-btn svg {
+    width: 11px;
+    height: 27px;
+}
+.item-qty {
+    float: left;
+    font-weight: 500;
+    font-size: 15px;
+    width: 36px;
+    height: 28px;
+    padding: 0;
+    background: #fff;
+    text-align: center;
+    outline: none;
+    border: 1px solid #f3f4f4;
+    border-radius: 0px;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    -o-appearance: none;
+    appearance: none;
+}
+.col-lg-4{
+    flex: 0 0 33.333333%;
+    max-width: 33.333333%;
+}
+
+.order-summary-block {
+    background: #fff;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 4px;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.08);
+}
+.summary-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 10px;
+    margin-bottom: 15px;
+}
+.summary-total {
+    font-size: 16px;
+    padding-bottom: 10px;
+    padding-top: 10px;
+    font-weight: bold;
+    border-top: 1px dotted #dfe0e1;
+    border-bottom: 1px dotted #dfe0e1;
+    margin-bottom: 10px;
+}
+.summary-total p {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0;
+}
+.summary-total span {
+    font-weight: bold;
+    float: right;
+    color: red;
+    font-size: 24px;
+}

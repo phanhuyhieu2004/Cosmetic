@@ -183,6 +183,7 @@ header {
     display: block;
     font-size: 14px;
     white-space: nowrap;
+    text-transform: uppercase;
 }
 
 .header-bottom .main-menu .menu-list .sub-menu-lv1 .menu-list-lv1 > li > a > i {

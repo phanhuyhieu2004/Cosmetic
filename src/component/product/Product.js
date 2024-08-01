@@ -1,20 +1,42 @@
 import "./Product.css"
-import Slider from "react-slick";
-import React from "react";
+import React, {useEffect, useState} from "react";
+import {useParams} from "react-router-dom";
+import axios from "axios";
 
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
 
 function Product() {
-    const settings = {
-        dots: true,
-        infinite: true,
-        slidesToShow: 1,
-        slidesToScroll: 1,
-        arrows: true,
-        autoplay: true,
-        autoplaySpeed: 1000
-    };
+    const {id}=useParams();
+    const [quantity, setQuantity] = useState(1);
+    const [product,setProduct]=useState('');
+
+    const [slides,setSlides]=useState([]);
+    const [currenIndex, setCurrenIndex] = useState(0);
+    const handleIncrease = () => {
+        setQuantity(quantity + 1)
+    }
+    const handleDecrease = () => {
+        setQuantity(quantity > 1 ? quantity - 1 : 1);
+    }
+    const prevSlide = () => {
+        setCurrenIndex(currenIndex - 1);
+    }
+    const nextSlide = () => {
+        setCurrenIndex(currenIndex + 1);
+
+    }
+    const handleThumbnailClick = (index) => {
+        setCurrenIndex(index)
+    }
+    useEffect(() => {
+        axios.get(`http://localhost:8080/api/products/product/${id}`)
+            .then(response=>setProduct(response.data))
+            .catch(error=>console.error("Lỗi không lấy được sản phẩm :",error.message));
+    }, [id]);
+    useEffect(() => {
+        axios.get(`http://localhost:8080/api/images/${id}`)
+            .then(response => setSlides(response.data))
+            .catch(error => console.error('Lỗi không lấy được ảnh:', error));
+    }, []);
     return (
         <>
             <main className="main-content">
@@ -24,7 +46,7 @@ function Product() {
                             <div className="breadcrumb-list">
                                 <ol className="breadcrumb breadcrumb-arrows">
                                     <li><a href="/home"><span>Trang chủ</span></a></li>
-                                    <li><a href="/home"><span>Tất cả sản phẩm</span></a></li>
+                                    <li><a href="/home"><span>{product && product.subcategories.name}</span></a></li>
                                     <li><a href="/home"><span>Son Kem lâu trôi</span></a></li>
                                 </ol>
                             </div>
@@ -32,119 +54,138 @@ function Product() {
                     </div>
                     <section className="productDetail-information">
                         <div className="container container-pd2">
-                            <div className="productDetail--main">
-                                <div className="productDetail--gallery">
-                                    <div className="stickyProduct-gallery">
-                                        <div className="product-container-gallery">
-                                            <div className="wrapbox-gallery">
-                                                <div className="wrapbox-image wrapbox-image-verticalSlide">
-                                                    <div className="productGallery_slider">
-                                                        <Slider {...settings}>
-                                                            <div>
-                                                                <img className="image-detail"
-                                                                     src="https://product.hstatic.net/200000073977/product/38_effde4cf8b464d8ba0d98289036451a0.png"
-                                                                     alt="Slide 1"/>
-                                                            </div>
-                                                            <div>
-                                                                <img className="image-detail"
-                                                                     src="https://product.hstatic.net/200000073977/product/38_effde4cf8b464d8ba0d98289036451a0.png"
-                                                                     alt="Slide 1"/>
-                                                            </div>
-                                                            <div>
-                                                                <img className="image-detail"
-                                                                     src="https://product.hstatic.net/200000073977/product/38_effde4cf8b464d8ba0d98289036451a0.png"
-                                                                     alt="Slide 1"/>
-                                                            </div>
-                                                            <div>
-                                                                <img className="image-detail"
-                                                                     src="https://product.hstatic.net/200000073977/product/38_effde4cf8b464d8ba0d98289036451a0.png"
-                                                                     alt="Slide 1"/>
-                                                            </div>
+                            <div className="productDetail--gallery">
+                                <div className="wrapbox-gallery">
+                                    <div className="wrapbox-image ">
+                                        <div className="productGallery_thumb">
+                                            <ul className="productSlick-thumb slick-slider">
+                                                <div className="slick-list draggable"
+                                                     style={{height: "fit-content"}}>
+                                                    <div className="slick-track">
+                                                        {slides.map((slide, index) => (
+                                                            <li className="slick-slide">
 
-                                                        </Slider>
+                                                                <img
+                                                                    key={index}
+                                                                    src={slide.name}
+                                                                    alt={`Thumbnail ${index + 1}`}
+                                                                    className={`product-thumb__item ${currenIndex === index ? 'active' : ''}`}
+                                                                    onClick={() => handleThumbnailClick(index)}
+                                                                />
+
+                                                            </li>
+
+
+                                                        ))}
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </ul>
+                                        </div>
+                                        <div className="productGallery_slider">
+                                            <button
+                                                className={`nav-button prev-button ${currenIndex === 0 ? 'hidden' : ''}`}
+                                                onClick={prevSlide}><i className="fa-solid fa-arrow-left"></i></button>
+                                            <img src={slides[currenIndex]} className="slide-image" alt="Không có ảnh"/>
+                                            <button
+                                                className={`nav-button next-button ${currenIndex === slides.length - 1 ? 'hidden' : ''}`}
+                                                onClick={nextSlide}><i className="fa-solid fa-arrow-right"></i></button>
                                         </div>
                                     </div>
                                 </div>
-                                <div className="productDetailjs productDetail--content">
-                                    <div className="wrapbox-detail">
-                                        <div className="product-heading">
-                                            <h1>Son Kem M.O.I Phiên Bản Mùa Lễ Hội [Mua 2 Tặng 1]</h1>
-                                        </div>
-                                        <div className="product-price">
-<span className="pro-price">379,000₫</span>
-                                        </div>
-                                        <div className="product-variants">
-                                            <form>
-                                                <div className="select-swatch clearfix">
-                                                    <div className="swatch clearfix">
-<div className="title-swap header">
-Màu sắc:<strong>ĐỎ GẠCH</strong>
-</div>
-                                                        <div className="select-swap">
-                                                            <div className="n-sd swatch-element color do-gach  ">
-                                                                <label className="do-gach sd"
-                                                                       htmlFor="swatch-0-do-gach">
-                                                                    <span>DO GACH</span>
-                                                                </label>
-                                                            </div>
-                                                            <div className="n-sd swatch-element color do-gach  ">
-                                                                <label className="do-gach sd"
-                                                                       htmlFor="swatch-0-do-gach">
-                                                                    <span>DO NAU</span>
-                                                                </label>
-                                                            </div>
-                                                            <div className="n-sd swatch-element color do-gach  ">
-                                                                <label className="do-gach sd"
-                                                                       htmlFor="swatch-0-do-gach">
-                                                                    <span>DO RUBY</span>
-                                                                </label>
-                                                            </div>
+                            </div>
+                            <div className="productDetailjs productDetail--content">
+                                <div className="wrapbox-detail">
+                                    <div className="product-heading">
+                                        <h1>{product.name}</h1>
+                                    </div>
+                                    <div className="product--price">
+                                        <span className="price-real">{product.price},000₫</span>
+                                    </div>
+                                    <div className="product--variants">
+                                        <form>
+                                            <div className="select-swatch clearfix">
+                                                <div className="swatch clearfix">
+                                                    <div className="title-swap header">
+                                                        <p>Màu sắc :</p><strong>WATERMELON ĐỎ CAM</strong>
+                                                    </div>
+                                                    <div className="select-swap">
+                                                        <div className="swatch-element">
+                                                            <label className="watermelon-do-cam sd">
+                                                                <span>WATERMELON ĐỎ CAM</span>
+                                                            </label>
+                                                        </div>
+                                                        <div className="swatch-element">
+                                                            <label className="watermelon-do-cam sd">
+                                                                <span>WATERMELON ĐỎ CAM</span>
+                                                            </label>
+                                                        </div>
+                                                        <div className="swatch-element">
+                                                            <label className="watermelon-do-cam sd">
+                                                                <span>WATERMELON ĐỎ CAM</span>
+                                                            </label>
+                                                        </div>
+                                                        <div className="swatch-element">
+                                                            <label className="watermelon-do-cam sd">
+                                                                <span>WATERMELON ĐỎ CAM</span>
+                                                            </label>
+                                                        </div>
+                                                        <div className="swatch-element">
+                                                            <label className="watermelon-do-cam sd">
+                                                                <span>WATERMELON ĐỎ CAM</span>
+                                                            </label>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </form>
-                                        </div>
-                                        <div className="product-actions">
-                                            <div className="select-actions d-lg-flex clearfix">
-                                                <div className="quantity-area">
-                                                    <div className="quantity-title">Quantity:</div>
-                                                    <div className="box-qtt">
-
-                                                        <button type="button" onClick="HRT.All.minusQuantity()"
-                                                                className="qty-btn">
-                                                            <svg focusable="false" className="icon icon--minus "
-                                                                 viewBox="0 0 10 2" role="presentation">
-                                                                <path d="M10 0v2H0V0z"></path>
-                                                            </svg>
-                                                        </button>
-                                                        <input type="text" id="quantity" name="quantity" value="1"
-                                                               min="1" className="quantity-input"/>
-                                                        <button type="button" onClick="HRT.All.plusQuantity()"
-                                                                className="qty-btn">
-                                                            <svg focusable="false" className="icon icon--plus "
-                                                                 viewBox="0 0 10 10" role="presentation">
-                                                                <path d="M6 4h4v2H6v4H4V6H0V4h4V0h2v4z"></path>
-                                                            </svg>
-                                                        </button>
-                                                    </div>
-                                                    <div className="addcart-area">
-                                                        <button type="button" id="add-to-cart"
-                                                                className="add-to-cartProduct button dark btn-addtocart addtocart-modal"
-                                                                name="add"><span className="btn-pr">Thêm vào giỏ</span></button>
-                                                    </div>
-                                                </div>
-                                                <div className="addcart-area">
-
-                                                    <button type="button" id="buy-now"
-                                                            className="button dark btn-buynow btnred addtocart-modal"
-                                                            name="add"><span className="btn-pr">Mua ngay</span></button>
-
-                                                </div>
                                             </div>
+                                        </form>
+                                    </div>
+                                    <div className="quantity-area">
+                                        <div className="quantity-title">
+                                            Số lượng :
                                         </div>
+                                        <div className="box-quantity">
+                                            <button type={"button"} className="btn-quantity" onClick={handleDecrease}>
+                                                <svg focusable="false" className="icon icon--minus " viewBox="0 0 10 2"
+                                                     role="presentation">
+                                                    <path d="M10 0v2H0V0z"></path>
+                                                </svg>
+                                            </button>
+                                            <input type={"text"} className="quantity-input" value={quantity} min={1}
+                                                   readOnly={true}/>
+                                            <button type={"button"} className="btn-quantity" onClick={handleIncrease}>
+                                                <svg focusable="false" className="icon icon--plus " viewBox="0 0 10 10"
+                                                     role="presentation">
+                                                    <path d="M6 4h4v2H6v4H4V6H0V4h4V0h2v4z"></path>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                        <div className="addCart-area">
+                                            <button className="btn-addtocart">
+                                                <span>THÊM VÀO GIO</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div className="addCart-area">
+                                        <button className="buy-now" type="button">
+                                            <span>MUA NGAY</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="product-decription">
+                            <div className="container">
+                                <div className="product-info">
+                                    <div className="nav tab-title">
+                                        <span className="title-product active">Mô tả sản phẩm</span>
+                                    </div>
+                                    <div className="nav-tabContent">
+                                        <div className="product-content">
+                                            <p>
+                                                {product.description}
+                                            </p>
+                                        </div>
+
                                     </div>
                                 </div>
                             </div>

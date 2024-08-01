@@ -1,6 +1,38 @@
 import "./Header.css"
-import React from "react";
+import React, {useEffect, useState} from "react";
+import axios from "axios";
+
 function Header() {
+    const [hoveredCategoryId, setHoveredCategoryId] = useState(null);
+    const [categories, setCategories] = useState([]);
+    const [subCategories, setSubCategories] = useState([]);
+    useEffect(() => {
+        axios.get('http://localhost:8080/api/categories')
+            .then(response => {
+                setCategories(response.data);
+            })
+            .catch(error => {
+                console.error('Không lấy được danh sách danh mục:', error);
+            });
+    }, []);
+
+    useEffect(() => {
+        if (hoveredCategoryId) {
+            axios.get(`http://localhost:8080/api/subcategories/${hoveredCategoryId}`)
+                .then(response => {
+                    setSubCategories(response.data);
+                })
+                .catch(error => {
+                    console.error('Không lấy được danh sách danh mục con:', error);
+                });
+        }
+    }, [hoveredCategoryId]);
+
+    const handleMouseEnter = (categoryId) => {
+        setHoveredCategoryId(categoryId);
+    };
+
+
     return (
         <>
             <header>
@@ -39,102 +71,38 @@ function Header() {
                     <div className="container">
                         <nav className="main-menu">
                             <ul className="menu-list">
-                                <li class="sub-menu-lv1"><a href="/home">
-                                 TRANG ĐIỂM
-                                    <span className="tag">NEW</span>
-                                    <i class="fa fa-chevron-down"></i>
-                                </a>
-                                    <ul className="menu-sub menu-list-lv1">
-                                        <li className="sub-menu-lv2"><a href="">SON MÔI
-                                            <i className="fa fa-chevron-right"></i></a>
-                                            <ul className="menu-sub menu-list-lv2">
-                                                <li><a href="/home">Son Bóng</a>
+                                {categories.map(category => (
+                                    <li
+                                        key={category.id}
+                                        className="sub-menu-lv1"
+                                        onMouseEnter={() => handleMouseEnter(category.id)}
+                                    >
+                                        <a href="/home">
+                                            {category.name}
 
-                                                </li>
-                                                    <li><a href="/home">Son Bóng</a>
-
-                                                </li>
-                                                    <li><a href="/home">Son Bóng</a>
-
-                                                </li>
-                                                    <li><a href="/home">Son Bóng</a>
-
-                                                </li>
-                                                    <li><a href="/home">Son Bóng</a>
-
-                                                </li>
-
-
+                                            <i className="fa fa-chevron-down"></i>
+                                        </a>
+                                        {hoveredCategoryId === category.id && (
+                                            <ul className="menu-sub menu-list-lv1">
+                                                {subCategories.map(subCategory => (
+                                                    <li key={subCategory.id} className="sub-menu-lv2">
+                                                        <a href="#">{subCategory.name}</a>
+                                                    </li>
+                                                ))}
                                             </ul>
-                                        </li>
-                                        <li className="sub-menu-lv2"><a href="">SON MÔI
-                                            <i className="fa fa-chevron-right"></i></a></li>
-                                        <li className="sub-menu-lv2"><a href="">SON MÔI
-                                            <i className="fa fa-chevron-right"></i></a></li>
-                                        <li className="sub-menu-lv2"><a href="">SON MÔI
-                                            <i className="fa fa-chevron-right"></i></a></li>
-                                        <li className="sub-menu-lv2"><a href="">SON MÔI
-                                            <i className="fa fa-chevron-right"></i></a></li>
-                                        <li className="sub-menu-lv2"><a href="">SON MÔI
-                                            <i className="fa fa-chevron-right"></i></a></li>
-                                    </ul>
-                                </li> <li class="sub-menu-lv1"><a href="/home">
-                                    CHĂM SÓC DA
-                                    <span className="tag">NEW</span>
-                                    <i class="fa fa-chevron-down"></i>
-                                </a>
-                                    <ul className="menu-sub menu-list-lv1">
-                                        <li className="sub-menu-lv2"><a href="">SON MÔI
-                                            <i className="fa fa-chevron-right"></i></a>
-                                            <ul className="menu-sub menu-list-lv2">
-                                                <li><a href="/home">Son Bóng</a>
-
-                                                </li>
-                                                    <li><a href="/home">Son Bóng</a>
-
-                                                </li>
-                                                    <li><a href="/home">Son Bóng</a>
-
-                                                </li>
-                                                    <li><a href="/home">Son Bóng</a>
-
-                                                </li>
-                                                    <li><a href="/home">Son Bóng</a>
-
-                                                </li>
-
-
-                                            </ul>
-                                        </li>
-                                        <li className="sub-menu-lv2"><a href="">SON MÔI
-                                            <i className="fa fa-chevron-right"></i></a></li>
-                                        <li className="sub-menu-lv2"><a href="">SON MÔI
-                                            <i className="fa fa-chevron-right"></i></a></li>
-                                        <li className="sub-menu-lv2"><a href="">SON MÔI
-                                            <i className="fa fa-chevron-right"></i></a></li>
-                                        <li className="sub-menu-lv2"><a href="">SON MÔI
-                                            <i className="fa fa-chevron-right"></i></a></li>
-                                        <li className="sub-menu-lv2"><a href="">SON MÔI
-                                            <i className="fa fa-chevron-right"></i></a></li>
-                                    </ul>
-                                </li>
-                                <li class="sub-menu-lv1"><a href="/home">
-ƯU ĐÃI                                    <span></span>
-                                    <i class="fa fa-chevron-down"></i>
+                                        )}
+                                    </li>
+                                ))}
+                                <li className="sub-menu-lv1"><a href="/home">
+                                    HỆ THỐNG ĐẠI LÝ <span></span>
                                 </a></li>
-                                <li class="sub-menu-lv1"><a href="/home">
-HỆ THỐNG ĐẠI LÝ                                   <span></span>
-                                    <i class="fa fa-chevron-down"></i>
-                                </a></li>
-                                <li class="sub-menu-lv1"><a href="/home">
+                                <li className="sub-menu-lv1"><a href="/home">
                                     HỆ THỐNG CHUỖI CỬA HÀNG
                                     <span></span>
-                                    <i class="fa fa-chevron-down"></i>
                                 </a></li>
-                                <li class="sub-menu-lv1"><a href="/home">
+                                <li className="sub-menu-lv1"><a href="/home">
                                     ĐĂNG KÝ KINH DOANH
                                     <span></span>
-                                    <i class="fa fa-chevron-down"></i>
                                 </a></li>
 
 

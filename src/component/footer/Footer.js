@@ -1,8 +1,8 @@
 function Footer() {
-    return(
+    return (
         <>
             <footer className="footer">
-                <p className="footer-text">Bản quyền thuộc về @hieuhuyphantn, không sao chép dưới mọi hình thức</p>
+                <p className="footer-text">Liên hệ công việc qua mail : hieuhuyphantn@gmail.com hoặc SĐT : 0396671835</p>
             </footer>
         </>
     )
