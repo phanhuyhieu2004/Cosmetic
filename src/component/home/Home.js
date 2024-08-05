@@ -15,44 +15,44 @@ function Home() {
     const [variants, setVariants] = useState([]);
 console.log(selectedSubcategories)
     useEffect(() => {
-        axios.get('http://localhost:8080/api/categories')
+        axios.get('https://cosmeticbe-production.up.railway.app/api/categories')
             .then(response => setCategories(response.data))
             .catch(error => console.error('Lỗi không lấy được danh mục cha:', error));
     }, []);
 
     useEffect(() => {
-        axios.get('http://localhost:8080/api/products')
+        axios.get('https://cosmeticbe-production.up.railway.app/api/products')
             .then(response => setProducts(response.data))
             .catch(error => console.error('Lỗi không lấy được sản phẩm:', error));
     }, []);
 
     useEffect(() => {
-        axios.get('http://localhost:8080/api/images')
+        axios.get('https://cosmeticbe-production.up.railway.app/api/images')
             .then(response => setImages(response.data))
             .catch(error => console.error('Lỗi không lấy được ảnh:', error));
     }, []);
 
     useEffect(() => {
-        axios.get('http://localhost:8080/api/variants')
+        axios.get('https://cosmeticbe-production.up.railway.app/api/variants')
             .then(response => setVariants(response.data))
             .catch(error => console.error('Lỗi không lấy được biến thể:', error));
     }, []);
 
     useEffect(() => {
-        axios.get('http://localhost:8080/api/subcategories')
+        axios.get('https://cosmeticbe-production.up.railway.app/api/subcategories')
             .then(response => {
                 setSubCategories(response.data);
 
                 const defaultSubcategories = {
-                    3: 1,
-                    4: 6,
-                    5:11
+                    1: 1,
+                    2: 4,
+                    3:8
                 };
                 setSelectedSubcategories(defaultSubcategories);
             })
             .catch(error => console.error('Lỗi không lấy được danh mục con:', error));
     }, []);
-
+console.log('id là ',selectedSubcategories);
     const handleSubcategoryClick = (subcategoryId, categoryId) => {
         setSelectedSubcategories(prev => ({
             ...prev,
@@ -92,7 +92,6 @@ console.log(selectedSubcategories)
                     </div>
                 </Slider>
             </div>
-
             {categories.map(category => (
                 <section className="product product-1" key={category.id}>
                     <div className="container container-product">
@@ -131,18 +130,20 @@ console.log(selectedSubcategories)
                                                 <div className="product-image">
                                                     <div className="image">
                                                         <picture>
-                                                            <img
-                                                                className="img-load"
-                                                                src={images[0].find(image => image.products.id === product.id)?.name}
-                                                                alt={images[0].find(image => image.products.id === product.id)?.name}
-                                                            />
+                                                            {images.filter(image => image.products.id === product.id)[0] && (
+                                                                <img
+                                                                    className="img-load"
+                                                                    src={images.filter(image => image.products.id === product.id)[0].name}
+                                                                    alt={images.filter(image => image.products.id === product.id)[0].name}
+                                                                />
+                                                            )}
                                                         </picture>
                                                     </div>
                                                 </div>
                                                 <div className="product-detail">
                                                     <h3 className="title-pr">
                                                         <Link className="quickview-product"
-                                                           to={`/product/${product.id}`}>
+                                                              to={`/product/${product.id}`}>
                                                             {product.name}
                                                         </Link>
                                                     </h3>
@@ -169,10 +170,27 @@ console.log(selectedSubcategories)
                                 </div>
                             </div>
                         )}
+
                     </div>
+
+                    <div className={`product-btn ${products.length>18?'active':''}`} >
+                        {selectedSubcategories[category.id] && (
+                            <Link
+                                to={`/products/${selectedSubcategories[category.id]}`}
+                                className="button load-more"
+                            >
+                                Xem thêm
+                            </Link>
+                        )}
+                    </div>
+
                 </section>
+
             ))}
+
+
         </main>
+
     );
 }
 

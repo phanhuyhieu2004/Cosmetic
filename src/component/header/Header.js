@@ -7,7 +7,7 @@ function Header() {
     const [categories, setCategories] = useState([]);
     const [subCategories, setSubCategories] = useState([]);
     useEffect(() => {
-        axios.get('http://localhost:8080/api/categories')
+        axios.get('https://cosmeticbe-production.up.railway.app/api/categories')
             .then(response => {
                 setCategories(response.data);
             })
@@ -18,7 +18,7 @@ function Header() {
 
     useEffect(() => {
         if (hoveredCategoryId) {
-            axios.get(`http://localhost:8080/api/subcategories/${hoveredCategoryId}`)
+            axios.get(`https://cosmeticbe-production.up.railway.app/api/subcategories/${hoveredCategoryId}`)
                 .then(response => {
                     setSubCategories(response.data);
                 })
@@ -61,7 +61,7 @@ function Header() {
                             <i className="fas fa-shopping-cart"/>
                             <span>Giỏ hàng</span>
                         </a>
-                        <a href="#" className="icon">
+                        <a href="/login" className="icon">
                             <i className="fas fa-user"/>
                             <span>Đăng nhập / Đăng ký</span>
                         </a>

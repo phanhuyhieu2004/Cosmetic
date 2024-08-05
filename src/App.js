@@ -7,6 +7,7 @@ import Footer from "./component/footer/Footer";
 import Product from "./component/product/Product";
 import Cart from "./component/cart/Cart";
 import Login from "./component/login/Login";
+import Register from "./component/register/Register";
 
 
 function App() {
@@ -23,7 +24,7 @@ function App() {
                         </>
                     }
                 />
- <Route
+                <Route
                     path="/cart"
                     element={
                         <>
@@ -46,12 +47,22 @@ function App() {
                         </>
                     }
                 />
- <Route
+                <Route
                     path="/login"
                     element={
                         <>
                             <Header/>
-                         <Login/>
+                            <Login/>
+                            <Footer/>
+                        </>
+                    }
+                />
+ <Route
+                    path="/register"
+                    element={
+                        <>
+                            <Header/>
+                            <Register/>
                             <Footer/>
                         </>
                     }

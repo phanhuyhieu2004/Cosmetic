@@ -1,10 +1,9 @@
-import "./Login.css"
 import React, {useState} from "react";
 
-function Login() {
-    const [statusEye,setStatusEye]=useState(false);
+function Register() {
+    const [statusEyes,setStatusEyes]=useState(false);
     const handleClick = () => {
-        setStatusEye(statusEye=>!statusEye);
+        setStatusEyes(statusEyes=>!statusEyes);
 
     }
     return (
@@ -12,7 +11,7 @@ function Login() {
             <main className="main-content">
                 <div className="container login-container">
                     <form className="form-login">
-                        <h1 className="form-heading">Đăng nhập</h1>
+                        <h1 className="form-heading">Đăng ký</h1>
                         <div className="form-group">
                             <i class="far fa-user"></i>
                             <input type="text" className="form-input" placeholder="Tên đăng nhập"/>
@@ -20,15 +19,15 @@ function Login() {
                         </div>
                         <div className="form-group">
                             <i className="fas fa-key"></i>
-                            <input type={statusEye?"text":"password"} className="form-input" placeholder="Mật khẩu"/>
+                            <input type={statusEyes?"text":"password"} className="form-input" placeholder="Mật khẩu"/>
                             <div className="eye" onClick={handleClick}>
-                                <i className={statusEye?"fa-solid fa-eye":"fa-solid fa-eye-slash"}></i>
+                                <i className={statusEyes?"fa-solid fa-eye":"fa-solid fa-eye-slash"}></i>
                             </div>
                         </div>
                         <div className="form-link">
-                            <a href="/register">Chưa có tài khoản ? <span>Đăng ký</span></a>
+                            <a href="/register">Đã có tài khoản ? <span>Đăng nhập</span></a>
                         </div>
-                        <input type="submit" className="form-submit" value={"Đăng nhập"}/>
+                        <input type="submit" className="form-submit" value={"Đăng ký"}/>
                     </form>
 
 
@@ -37,5 +36,4 @@ function Login() {
         </>
     )
 }
-
-export default Login;
+export default Register;

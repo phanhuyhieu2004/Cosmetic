@@ -191,3 +191,22 @@ svg {
   overflow: hidden;
   vertical-align: middle;
 }
+.button {
+  position: relative;
+  display: inline-block;
+  z-index: 1;
+  overflow: hidden;
+  color: #fff;
+  background-color: var(--shop-color-button);
+  border: 0;
+  padding: 12px 28px;
+  font-size: 13px;
+  font-weight: 500;
+  text-align: center;
+  letter-spacing: 1px;
+  outline: none;
+  border-radius: 4px;
+  text-transform: uppercase;
+  -webkit-transition: color 0.45s cubic-bezier(0.785, 0.135, 0.15, 0.86), border 0.45s cubic-bezier(0.785, 0.135, 0.15, 0.86);
+  transition: color 0.45s cubic-bezier(0.785, 0.135, 0.15, 0.86), border 0.45s cubic-bezier(0.785, 0.135, 0.15, 0.86);
+}

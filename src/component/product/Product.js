@@ -1,42 +1,53 @@
-import "./Product.css"
-import React, {useEffect, useState} from "react";
-import {useParams} from "react-router-dom";
+import "./Product.css";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import axios from "axios";
 
-
 function Product() {
-    const {id}=useParams();
+    const { id } = useParams();
     const [quantity, setQuantity] = useState(1);
-    const [product,setProduct]=useState('');
-
-    const [slides,setSlides]=useState([]);
+    const [product, setProduct] = useState(null);
+    const [slides, setSlides] = useState([]);
     const [currenIndex, setCurrenIndex] = useState(0);
+    const [variants, setVariants] = useState([]);
+
     const handleIncrease = () => {
-        setQuantity(quantity + 1)
-    }
+        setQuantity(quantity + 1);
+    };
+
     const handleDecrease = () => {
         setQuantity(quantity > 1 ? quantity - 1 : 1);
-    }
-    const prevSlide = () => {
-        setCurrenIndex(currenIndex - 1);
-    }
-    const nextSlide = () => {
-        setCurrenIndex(currenIndex + 1);
+    };
 
-    }
+    const prevSlide = () => {
+        setCurrenIndex((prevIndex) => Math.max(prevIndex - 1, 0));
+    };
+
+    const nextSlide = () => {
+        setCurrenIndex((prevIndex) => Math.min(prevIndex + 1, slides.length - 1));
+    };
+
     const handleThumbnailClick = (index) => {
-        setCurrenIndex(index)
-    }
+        setCurrenIndex(index);
+    };
+
     useEffect(() => {
-        axios.get(`http://localhost:8080/api/products/product/${id}`)
-            .then(response=>setProduct(response.data))
-            .catch(error=>console.error("Lỗi không lấy được sản phẩm :",error.message));
+        axios.get(`https://cosmeticbe-production.up.railway.app/api/products/product/${id}`)
+            .then(response => setProduct(response.data))
+            .catch(error => console.error("Lỗi không lấy được sản phẩm :", error.message));
     }, [id]);
     useEffect(() => {
-        axios.get(`http://localhost:8080/api/images/${id}`)
+        axios.get('https://cosmeticbe-production.up.railway.app/api/variants')
+            .then(response => setVariants(response.data))
+            .catch(error => console.error('Lỗi không lấy được biến thể:', error));
+    }, []);
+
+    useEffect(() => {
+        axios.get(`https://cosmeticbe-production.up.railway.app/api/images/${id}`)
             .then(response => setSlides(response.data))
             .catch(error => console.error('Lỗi không lấy được ảnh:', error));
-    }, []);
+    }, [id]);
+
     return (
         <>
             <main className="main-content">
@@ -56,26 +67,20 @@ function Product() {
                         <div className="container container-pd2">
                             <div className="productDetail--gallery">
                                 <div className="wrapbox-gallery">
-                                    <div className="wrapbox-image ">
+                                    <div className="wrapbox-image">
                                         <div className="productGallery_thumb">
                                             <ul className="productSlick-thumb slick-slider">
-                                                <div className="slick-list draggable"
-                                                     style={{height: "fit-content"}}>
+                                                <div className="slick-list draggable" style={{ height: "fit-content" }}>
                                                     <div className="slick-track">
                                                         {slides.map((slide, index) => (
-                                                            <li className="slick-slide">
-
+                                                            <li key={index} className="slick-slide">
                                                                 <img
-                                                                    key={index}
                                                                     src={slide.name}
                                                                     alt={`Thumbnail ${index + 1}`}
                                                                     className={`product-thumb__item ${currenIndex === index ? 'active' : ''}`}
                                                                     onClick={() => handleThumbnailClick(index)}
                                                                 />
-
                                                             </li>
-
-
                                                         ))}
                                                     </div>
                                                 </div>
@@ -84,11 +89,21 @@ function Product() {
                                         <div className="productGallery_slider">
                                             <button
                                                 className={`nav-button prev-button ${currenIndex === 0 ? 'hidden' : ''}`}
-                                                onClick={prevSlide}><i className="fa-solid fa-arrow-left"></i></button>
-                                            <img src={slides[currenIndex]} className="slide-image" alt="Không có ảnh"/>
+                                                onClick={prevSlide}
+                                            >
+                                                <i className="fa-solid fa-arrow-left"></i>
+                                            </button>
+                                            <img
+                                                src={slides[currenIndex]?.name || ''}
+                                                className="slide-image"
+                                                alt="Không có ảnh"
+                                            />
                                             <button
                                                 className={`nav-button next-button ${currenIndex === slides.length - 1 ? 'hidden' : ''}`}
-                                                onClick={nextSlide}><i className="fa-solid fa-arrow-right"></i></button>
+                                                onClick={nextSlide}
+                                            >
+                                                <i className="fa-solid fa-arrow-right"></i>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -96,10 +111,10 @@ function Product() {
                             <div className="productDetailjs productDetail--content">
                                 <div className="wrapbox-detail">
                                     <div className="product-heading">
-                                        <h1>{product.name}</h1>
+                                        <h1>{product?.name}</h1>
                                     </div>
                                     <div className="product--price">
-                                        <span className="price-real">{product.price},000₫</span>
+                                        <span className="price-real">{product?.price},000₫</span>
                                     </div>
                                     <div className="product--variants">
                                         <form>
@@ -109,31 +124,17 @@ function Product() {
                                                         <p>Màu sắc :</p><strong>WATERMELON ĐỎ CAM</strong>
                                                     </div>
                                                     <div className="select-swap">
+                                                        {variants
+                                                            .filter(variant =>
+                                                                variant.products.id ===  product?.id// Lọc sản phẩm theo mục con đã chọn
+                                                            )
+                                                            .map(variant => (
                                                         <div className="swatch-element">
                                                             <label className="watermelon-do-cam sd">
-                                                                <span>WATERMELON ĐỎ CAM</span>
+                                                                <span>{variant.name}</span>
                                                             </label>
                                                         </div>
-                                                        <div className="swatch-element">
-                                                            <label className="watermelon-do-cam sd">
-                                                                <span>WATERMELON ĐỎ CAM</span>
-                                                            </label>
-                                                        </div>
-                                                        <div className="swatch-element">
-                                                            <label className="watermelon-do-cam sd">
-                                                                <span>WATERMELON ĐỎ CAM</span>
-                                                            </label>
-                                                        </div>
-                                                        <div className="swatch-element">
-                                                            <label className="watermelon-do-cam sd">
-                                                                <span>WATERMELON ĐỎ CAM</span>
-                                                            </label>
-                                                        </div>
-                                                        <div className="swatch-element">
-                                                            <label className="watermelon-do-cam sd">
-                                                                <span>WATERMELON ĐỎ CAM</span>
-                                                            </label>
-                                                        </div>
+                                                            ))}
                                                     </div>
                                                 </div>
                                             </div>
@@ -144,16 +145,16 @@ function Product() {
                                             Số lượng :
                                         </div>
                                         <div className="box-quantity">
-                                            <button type={"button"} className="btn-quantity" onClick={handleDecrease}>
-                                                <svg focusable="false" className="icon icon--minus " viewBox="0 0 10 2"
+                                            <button type="button" className="btn-quantity" onClick={handleDecrease}>
+                                                <svg focusable="false" className="icon icon--minus" viewBox="0 0 10 2"
                                                      role="presentation">
                                                     <path d="M10 0v2H0V0z"></path>
                                                 </svg>
                                             </button>
-                                            <input type={"text"} className="quantity-input" value={quantity} min={1}
-                                                   readOnly={true}/>
-                                            <button type={"button"} className="btn-quantity" onClick={handleIncrease}>
-                                                <svg focusable="false" className="icon icon--plus " viewBox="0 0 10 10"
+                                            <input type="text" className="quantity-input" value={quantity} min={1}
+                                                   readOnly/>
+                                            <button type="button" className="btn-quantity" onClick={handleIncrease}>
+                                                <svg focusable="false" className="icon icon--plus" viewBox="0 0 10 10"
                                                      role="presentation">
                                                     <path d="M6 4h4v2H6v4H4V6H0V4h4V0h2v4z"></path>
                                                 </svg>
@@ -161,7 +162,7 @@ function Product() {
                                         </div>
                                         <div className="addCart-area">
                                             <button className="btn-addtocart">
-                                                <span>THÊM VÀO GIO</span>
+                                                <span>THÊM VÀO GIỎ</span>
                                             </button>
                                         </div>
                                     </div>
@@ -182,10 +183,9 @@ function Product() {
                                     <div className="nav-tabContent">
                                         <div className="product-content">
                                             <p>
-                                                {product.description}
+                                                {product?.description}
                                             </p>
                                         </div>
-
                                     </div>
                                 </div>
                             </div>
@@ -194,8 +194,7 @@ function Product() {
                 </div>
             </main>
         </>
-    )
-
+    );
 }
 
-export default Product
+export default Product;

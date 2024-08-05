@@ -68,3 +68,10 @@
     background: deeppink;
     color: black;
 }
+.form-link{
+    text-align: right;
+}
+.form-link span{
+    color: deeppink;
+    font-weight: bold;
+}

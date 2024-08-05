@@ -9,7 +9,8 @@
     height: auto;
     max-height: 350px;
     padding: 0;
-    margin: 0;
+
+    margin-bottom: 100px;
 }
 
 .slick-slide img {
@@ -19,10 +20,7 @@
     object-fit: fill;
 }
 
-.product {
-    padding-bottom: 70px;
-    margin-top: 80px;
-}
+
 
 .container {
     width: 100%;
@@ -232,6 +230,25 @@
     font-weight: 600;
     font-size: 14px;
     color: #333; /* Kích thước chữ */
+}
+.product-btn{
+    display: none;
+}
+.product-btn.active{
+    width: 150px;
+display: block;
+    margin: 20px auto;
+}
+.load-more{
+    position: relative;
+    color: var(--shop-color-button);
+    border: 1px solid var(--shop-color-button);
+    background: #fff;
+    margin-top: 20px;
+    text-transform: initial;
+    font-size: 14px;
+    border-radius: 4px;
+    padding: 10px 25px;
 }
 
 
