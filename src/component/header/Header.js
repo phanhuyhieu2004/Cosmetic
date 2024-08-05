@@ -1,6 +1,7 @@
 import "./Header.css"
 import React, {useEffect, useState} from "react";
 import axios from "axios";
+import {Link} from "react-router-dom";
 
 function Header() {
     const [hoveredCategoryId, setHoveredCategoryId] = useState(null);
@@ -86,7 +87,7 @@ function Header() {
                                             <ul className="menu-sub menu-list-lv1">
                                                 {subCategories.map(subCategory => (
                                                     <li key={subCategory.id} className="sub-menu-lv2">
-                                                        <a href="#">{subCategory.name}</a>
+                                                        <Link to={`/products/${subCategory.id}/${subCategory.name}`} >{subCategory.name}</Link>
                                                     </li>
                                                 ))}
                                             </ul>

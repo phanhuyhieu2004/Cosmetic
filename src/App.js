@@ -8,6 +8,7 @@ import Product from "./component/product/Product";
 import Cart from "./component/cart/Cart";
 import Login from "./component/login/Login";
 import Register from "./component/register/Register";
+import Products from "./component/product/Products";
 
 
 function App() {
@@ -57,12 +58,22 @@ function App() {
                         </>
                     }
                 />
- <Route
+                <Route
                     path="/register"
                     element={
                         <>
                             <Header/>
                             <Register/>
+                            <Footer/>
+                        </>
+                    }
+                />
+                <Route
+                    path="/products/:id/:name"
+                    element={
+                        <>
+                            <Header/>
+                            <Products/>
                             <Footer/>
                         </>
                     }

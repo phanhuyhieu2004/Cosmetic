@@ -173,7 +173,10 @@
     font-size: 14px;
     color: #333;
 }
-
+.product.product-1{
+    margin-top: 50px;
+    margin-bottom: 50px;
+}
 .price {
     color: #ebb0ba;
     margin-right: 4px;

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useState} from "react";
 import axios from "axios";
 import "./Home.css";
 import Slider from "react-slick";
@@ -13,7 +13,8 @@ function Home() {
     const [selectedSubcategories, setSelectedSubcategories] = useState({});
     const [images, setImages] = useState([]);
     const [variants, setVariants] = useState([]);
-console.log(selectedSubcategories)
+    const [productCountBySubcategory, setProductCountBySubcategory] = useState({}); // Trạng thái lưu số lượng sản phẩm
+
     useEffect(() => {
         axios.get('https://cosmeticbe-production.up.railway.app/api/categories')
             .then(response => setCategories(response.data))
@@ -22,7 +23,20 @@ console.log(selectedSubcategories)
 
     useEffect(() => {
         axios.get('https://cosmeticbe-production.up.railway.app/api/products')
-            .then(response => setProducts(response.data))
+            .then(response => {
+                setProducts(response.data);
+
+                // Tính số lượng sản phẩm cho mỗi danh mục con
+                const countBySubcategory = response.data.reduce((acc, product) => {
+                    const subcategoryId = product.subcategories.id;
+                    if (!acc[subcategoryId]) {
+                        acc[subcategoryId] = 0;
+                    }
+                    acc[subcategoryId] += 1;
+                    return acc;
+                }, {});
+                setProductCountBySubcategory(countBySubcategory);
+            })
             .catch(error => console.error('Lỗi không lấy được sản phẩm:', error));
     }, []);
 
@@ -46,20 +60,20 @@ console.log(selectedSubcategories)
                 const defaultSubcategories = {
                     1: 1,
                     2: 4,
-                    3:8
+                    3: 8
                 };
                 setSelectedSubcategories(defaultSubcategories);
             })
             .catch(error => console.error('Lỗi không lấy được danh mục con:', error));
     }, []);
-console.log('id là ',selectedSubcategories);
+
     const handleSubcategoryClick = (subcategoryId, categoryId) => {
         setSelectedSubcategories(prev => ({
             ...prev,
             [categoryId]: subcategoryId
         }));
     };
-
+    console.log("danh mục con", subCategories);
     const settings = {
         dots: true,
         infinite: true,
@@ -69,7 +83,6 @@ console.log('id là ',selectedSubcategories);
         autoplay: true,
         autoplaySpeed: 1000
     };
-
     return (
         <main className="main-content">
             <div className="slider-container">
@@ -111,7 +124,7 @@ console.log('id là ',selectedSubcategories);
                                                         handleSubcategoryClick(subcategory.id, category.id);
                                                     }}
                                                 >
-                                                    {subcategory.name}
+                                                    {subcategory.name} ({productCountBySubcategory[subcategory.id] || 0})
                                                 </a>
                                             </li>
                                         ))}
@@ -125,6 +138,7 @@ console.log('id là ',selectedSubcategories);
                                         .filter(product =>
                                             product.subcategories.id === selectedSubcategories[category.id] // Lọc sản phẩm theo mục con đã chọn
                                         )
+                                        .slice(0, 18)
                                         .map(product => (
                                             <div key={product.id} className="product-items">
                                                 <div className="product-image">
@@ -170,27 +184,22 @@ console.log('id là ',selectedSubcategories);
                                 </div>
                             </div>
                         )}
-
                     </div>
 
-                    <div className={`product-btn ${products.length>18?'active':''}`} >
-                        {selectedSubcategories[category.id] && (
+                    <div
+                        className={`product-btn ${productCountBySubcategory[selectedSubcategories[category.id]] > 18 ? 'active' : ''}`}>
+                        {selectedSubcategories[category.id] && productCountBySubcategory[selectedSubcategories[category.id]] > 18 && (
                             <Link
-                                to={`/products/${selectedSubcategories[category.id]}`}
+                                to={`/products/${selectedSubcategories[category.id]}/${encodeURIComponent(subCategories[`${selectedSubcategories[category.id] - 1}`].name)}`}
                                 className="button load-more"
                             >
                                 Xem thêm
                             </Link>
                         )}
                     </div>
-
                 </section>
-
             ))}
-
-
         </main>
-
     );
 }
 
