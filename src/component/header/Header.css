@@ -199,3 +199,41 @@ header {
     transition: right 0.3s ease-in-out;
 }
 
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.icon {
+    cursor: pointer;
+}
+
+.dropdown-menu {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: white;
+    border: 1px solid #ddd;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    z-index: 1000;
+}
+
+
+.dropdown-menu a {
+    padding: 8px 12px;
+    text-decoration: none;
+
+    display: block;
+}
+
+.dropdown-menu span {
+    padding: 8px 12px;
+    text-decoration: none;
+    cursor: pointer;
+    display: block;
+}
+
+

@@ -10,43 +10,90 @@ function Product() {
     const [slides, setSlides] = useState([]);
     const [currenIndex, setCurrenIndex] = useState(0);
     const [variants, setVariants] = useState([]);
+    const [selectedVariant, setSelectedVariant] = useState(null);
+    const [hasVariants, setHasVariants] = useState(false);
+    const user = JSON.parse(localStorage.getItem("user"));
 
-    const handleIncrease = () => {
-        setQuantity(quantity + 1);
-    };
+    const handleIncrease = () => setQuantity(quantity + 1);
+    const handleDecrease = () => setQuantity(quantity > 1 ? quantity - 1 : 1);
+    const handleVariantClick = (variant) => setSelectedVariant(variant);
 
-    const handleDecrease = () => {
-        setQuantity(quantity > 1 ? quantity - 1 : 1);
-    };
+    const prevSlide = () => setCurrenIndex((prevIndex) => Math.max(prevIndex - 1, 0));
+    const nextSlide = () => setCurrenIndex((prevIndex) => Math.min(prevIndex + 1, slides.length - 1));
+    const handleThumbnailClick = (index) => setCurrenIndex(index);
 
-    const prevSlide = () => {
-        setCurrenIndex((prevIndex) => Math.max(prevIndex - 1, 0));
-    };
+    const addToCart = () => {
+        // If the product has variants, ensure a variant is selected
+        if (hasVariants && !selectedVariant) {
+            alert("Vui lòng chọn một biến thể.");
+            return;
+        }
 
-    const nextSlide = () => {
-        setCurrenIndex((prevIndex) => Math.min(prevIndex + 1, slides.length - 1));
-    };
+        // Check if product quantity is available
+        if (product.quantity <= 0) {
+            alert("Sản phẩm đã hết hàng.");
+            return;
+        }
 
-    const handleThumbnailClick = (index) => {
-        setCurrenIndex(index);
+        // Default to variant ID 0 if no variants are present
+        const variantId = hasVariants ? selectedVariant?.id : null;
+
+        axios.post('http://localhost:8080/api/cart/add', null, {
+            params: {
+                accountId: user.id,
+                productId: product.id,
+                variantId: variantId,
+                quantity: quantity
+            }
+        })
+            .then(response => {
+                alert("Sản phẩm đã được thêm vào giỏ hàng");
+            })
+            .catch(error => {
+                console.error("Lỗi không thêm được sản phẩm vào giỏ hàng:", error);
+                alert("Đã xảy ra lỗi khi thêm sản phẩm vào giỏ hàng.");
+            });
     };
 
     useEffect(() => {
-        axios.get(`https://cosmeticbe-production.up.railway.app/api/products/product/${id}`)
-            .then(response => setProduct(response.data))
-            .catch(error => console.error("Lỗi không lấy được sản phẩm :", error.message));
-    }, [id]);
-    useEffect(() => {
-        axios.get('https://cosmeticbe-production.up.railway.app/api/variants')
-            .then(response => setVariants(response.data))
+        axios.get('http://localhost:8080/api/variants')
+            .then(response => {
+                const variantsData = response.data;
+                setVariants(variantsData);
+
+                // Check if the product has any variants
+                const productHasVariants = variantsData.some(variant => variant.products.id === product.id);
+                setHasVariants(productHasVariants);
+            })
             .catch(error => console.error('Lỗi không lấy được biến thể:', error));
-    }, []);
+    }, [product]);
 
     useEffect(() => {
-        axios.get(`https://cosmeticbe-production.up.railway.app/api/images/${id}`)
+        axios.get(`http://localhost:8080/api/images/${id}`)
             .then(response => setSlides(response.data))
             .catch(error => console.error('Lỗi không lấy được ảnh:', error));
     }, [id]);
+
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchProductData = async () => {
+            try {
+                const response = await axios.get(`http://localhost:8080/api/products/product/${id}`);
+                setProduct(response.data);
+            } catch (error) {
+                console.error("Lỗi không lấy được sản phẩm:", error.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchProductData();
+    }, [id]);
+
+    if (loading) {
+        return <div>Loading...</div>;
+    }
 
     return (
         <>
@@ -58,7 +105,7 @@ function Product() {
                                 <ol className="breadcrumb breadcrumb-arrows">
                                     <li><a href="/home"><span>Trang chủ</span></a></li>
                                     <li><a href="/home"><span>{product && product.subcategories.name}</span></a></li>
-                                    <li><a href="/home"><span>Son Kem lâu trôi</span></a></li>
+                                    <li><a href="/home"><span>{product && product.name}</span></a></li>
                                 </ol>
                             </div>
                         </div>
@@ -116,59 +163,68 @@ function Product() {
                                     <div className="product--price">
                                         <span className="price-real">{product?.price},000₫</span>
                                     </div>
-                                    <div className="product--variants">
-                                        <form>
-                                            <div className="select-swatch clearfix">
-                                                <div className="swatch clearfix">
-                                                    <div className="title-swap header">
-                                                        <p>Màu sắc :</p><strong>WATERMELON ĐỎ CAM</strong>
-                                                    </div>
-                                                    <div className="select-swap">
-                                                        {variants
-                                                            .filter(variant =>
-                                                                variant.products.id ===  product?.id// Lọc sản phẩm theo mục con đã chọn
-                                                            )
-                                                            .map(variant => (
-                                                        <div className="swatch-element">
-                                                            <label className="watermelon-do-cam sd">
-                                                                <span>{variant.name}</span>
-                                                            </label>
+                                    {hasVariants ? (
+                                        <div className="product--variants">
+                                            <form>
+                                                <div className="select-swatch clearfix">
+                                                    <div className="swatch clearfix">
+                                                        <div className="title-swap header">
+                                                            <p>Màu sắc :</p>
+                                                            <strong>{selectedVariant ? selectedVariant.name : 'Chọn màu'}</strong>
                                                         </div>
-                                                            ))}
+                                                        <div className="select-swap">
+                                                            {variants
+                                                                .filter(variant => variant.products.id === product.id)
+                                                                .map(variant => (
+                                                                    <div
+                                                                        className={`swatch-element`}
+                                                                        key={variant.id}
+                                                                        onClick={() => handleVariantClick(variant)}
+                                                                    >
+                                                                        <label
+                                                                            className={`variant ${selectedVariant?.id === variant.id ? 'sd' : ''}`}
+                                                                        >
+                                                                            <span>{variant.name}</span>
+                                                                        </label>
+                                                                    </div>
+                                                                ))}
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        </form>
-                                    </div>
+                                            </form>
+                                        </div>
+                                    ) : (
+                                        <div className="no-variants">
+                                            <p>Sản phẩm này không có biến thể.</p>
+                                        </div>
+                                    )}
                                     <div className="quantity-area">
                                         <div className="quantity-title">
                                             Số lượng :
                                         </div>
                                         <div className="box-quantity">
                                             <button type="button" className="btn-quantity" onClick={handleDecrease}>
-                                                <svg focusable="false" className="icon icon--minus" viewBox="0 0 10 2"
-                                                     role="presentation">
+                                                <svg focusable="false" className="icon icon--minus" viewBox="0 0 10 2" role="presentation">
                                                     <path d="M10 0v2H0V0z"></path>
                                                 </svg>
                                             </button>
-                                            <input type="text" className="quantity-input" value={quantity} min={1}
-                                                   readOnly/>
+                                            <input type="text" className="quantity-input" value={quantity} min={1} readOnly />
                                             <button type="button" className="btn-quantity" onClick={handleIncrease}>
-                                                <svg focusable="false" className="icon icon--plus" viewBox="0 0 10 10"
-                                                     role="presentation">
+                                                <svg focusable="false" className="icon icon--plus" viewBox="0 0 10 10" role="presentation">
                                                     <path d="M6 4h4v2H6v4H4V6H0V4h4V0h2v4z"></path>
                                                 </svg>
                                             </button>
                                         </div>
                                         <div className="addCart-area">
-                                            <button className="btn-addtocart">
-                                                <span>THÊM VÀO GIỎ</span>
+                                            <button className={`btn-addtocart ${product?.quantity <= 0 ? "disable" : "enable"}`} onClick={addToCart}
+                                                    disabled={product?.quantity <= 0}>
+                                                <span>{product?.quantity > 0 ? "THÊM VÀO GIỎ" : "HẾT HÀNG"}</span>
                                             </button>
                                         </div>
                                     </div>
                                     <div className="addCart-area">
                                         <button className="buy-now" type="button">
-                                            <span>MUA NGAY</span>
+                                            <a href={"/cart"}>MUA NGAY</a>
                                         </button>
                                     </div>
                                 </div>
@@ -182,9 +238,7 @@ function Product() {
                                     </div>
                                     <div className="nav-tabContent">
                                         <div className="product-content">
-                                            <p>
-                                                {product?.description}
-                                            </p>
+                                            <p>{product?.description}</p>
                                         </div>
                                     </div>
                                 </div>

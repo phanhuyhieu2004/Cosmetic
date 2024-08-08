@@ -11,19 +11,19 @@ function Products() {
 
 
     useEffect(() => {
-        axios.get(`https://cosmeticbe-production.up.railway.app/api/products/${id}`)
+        axios.get(`http://localhost:8080/api/products/${id}`)
             .then(response => setProducts(response.data))
             .catch(error => console.error("Lỗi không lấy được sản phẩm :", error.message));
     }, [id]);
 
     useEffect(() => {
-        axios.get('https://cosmeticbe-production.up.railway.app/api/variants')
+        axios.get('http://localhost:8080/api/variants')
             .then(response => setVariants(response.data))
             .catch(error => console.error('Lỗi không lấy được biến thể:', error));
     }, []);
 
     useEffect(() => {
-        axios.get(`https://cosmeticbe-production.up.railway.app/api/images`)
+        axios.get(`http://localhost:8080/api/images`)
             .then(response => setImages(response.data))
             .catch(error => console.error('Lỗi không lấy được ảnh:', error));
     }, [id]);

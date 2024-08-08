@@ -1,14 +1,20 @@
 import "./Header.css"
 import React, {useEffect, useState} from "react";
 import axios from "axios";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 
 function Header() {
     const [hoveredCategoryId, setHoveredCategoryId] = useState(null);
     const [categories, setCategories] = useState([]);
     const [subCategories, setSubCategories] = useState([]);
+    const navigate = useNavigate();
+    const [isOpen, setIsOpen] = useState(false);
+
+    const toggleMenu = () => setIsOpen(prev => !prev);
+
+    const user = JSON.parse(localStorage.getItem("user")); // Lấy thông tin người dùng từ localStorage
     useEffect(() => {
-        axios.get('https://cosmeticbe-production.up.railway.app/api/categories')
+        axios.get('http://localhost:8080/api/categories')
             .then(response => {
                 setCategories(response.data);
             })
@@ -16,10 +22,13 @@ function Header() {
                 console.error('Không lấy được danh sách danh mục:', error);
             });
     }, []);
-
+    const handleLogout = () => {
+        localStorage.removeItem("user");
+        navigate("/login");
+    };
     useEffect(() => {
         if (hoveredCategoryId) {
-            axios.get(`https://cosmeticbe-production.up.railway.app/api/subcategories/${hoveredCategoryId}`)
+            axios.get(`http://localhost:8080/api/subcategories/${hoveredCategoryId}`)
                 .then(response => {
                     setSubCategories(response.data);
                 })
@@ -58,14 +67,29 @@ function Header() {
                             <i className="far fa-heart"/>
                             <span>Yêu thích</span>
                         </a>
-                        <a href="#" className="icon">
+                        <a href="/cart" className="icon">
                             <i className="fas fa-shopping-cart"/>
                             <span>Giỏ hàng</span>
                         </a>
-                        <a href="/login" className="icon">
-                            <i className="fas fa-user"/>
-                            <span>Đăng nhập / Đăng ký</span>
-                        </a>
+                        {user ? (
+                            <div className="dropdown">
+            <span className="icon" onClick={toggleMenu}>
+                <i className="fas fa-user"/>
+                <span>
+                    Xin chào, {user.name} <i className="fa fa-angle-down" aria-hidden="true"></i>
+                </span>
+            </span>
+                                {isOpen && (
+                                    <div className="dropdown-menu">
+                                        <a href="/orders">Đơn mua</a>
+                                        <span onClick={handleLogout}>Đăng xuất</span>
+                                    </div>
+                                )}
+                            </div>) : (<a href="/login" className="icon">
+                                <i className="fas fa-user"/>
+                                <span>Đăng nhập / Đăng ký</span>
+                            </a>
+                        )}
                     </div>
                 </div>
                 <div className="header-bottom">
@@ -87,7 +111,8 @@ function Header() {
                                             <ul className="menu-sub menu-list-lv1">
                                                 {subCategories.map(subCategory => (
                                                     <li key={subCategory.id} className="sub-menu-lv2">
-                                                        <Link to={`/products/${subCategory.id}/${subCategory.name}`} >{subCategory.name}</Link>
+                                                        <Link
+                                                            to={`/products/${subCategory.id}/${subCategory.name}`}>{subCategory.name}</Link>
                                                     </li>
                                                 ))}
                                             </ul>

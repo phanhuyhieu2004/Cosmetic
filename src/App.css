@@ -210,3 +210,6 @@ svg {
   -webkit-transition: color 0.45s cubic-bezier(0.785, 0.135, 0.15, 0.86), border 0.45s cubic-bezier(0.785, 0.135, 0.15, 0.86);
   transition: color 0.45s cubic-bezier(0.785, 0.135, 0.15, 0.86), border 0.45s cubic-bezier(0.785, 0.135, 0.15, 0.86);
 }
+.css-1t1j96h-MuiPaper-root-MuiDialog-paper{
+  max-width: 2000px !important;
+}

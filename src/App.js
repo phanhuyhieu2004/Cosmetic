@@ -9,33 +9,37 @@ import Cart from "./component/cart/Cart";
 import Login from "./component/login/Login";
 import Register from "./component/register/Register";
 import Products from "./component/product/Products";
+import PrivateRoute from "./PrivateRouter";
 
 
 function App() {
     return (
         <div className="App">
             <Routes>
-                <Route
-                    path="/home"
-                    element={
-                        <>
-                            <Header/>
-                            <Home/>
-                            <Footer/>
-                        </>
-                    }
-                />
-                <Route
-                    path="/cart"
-                    element={
-                        <>
-                            <Header/>
-                            <Cart/>
-                            <Footer/>
 
-                        </>
-                    }
-                />
+                <Route element={<PrivateRoute redirectTo="/login" />}>
+                    <Route
+                        path="/cart"
+                        element={
+                            <>
+                                <Header/>
+                                <Cart/>
+                                <Footer/>
+
+                            </>
+                        }
+                    />
+                     />
+                    {/* Thêm các route riêng tư khác tại đây */}
+                </Route>
+                <Route path="/home" element={
+                    <>
+                        <Header/>
+                        <Home/>
+                        <Footer/>
+                    </>
+                }
+           />
 
 
                 <Route

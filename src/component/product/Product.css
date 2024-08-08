@@ -452,6 +452,7 @@
 .hidden{
     display: none;
 }
-
-
+.btn-addtocart.disable{
+    opacity: 0.5;
+}
 

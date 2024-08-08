@@ -208,3 +208,16 @@
     color: red;
     font-size: 24px;
 }
+.checkout-btn.btnred{
+    display: block;
+    background: red;
+    color: #fff;
+    text-decoration: none;
+    text-transform: uppercase;
+    padding: 10px 5px;
+    text-align: center;
+    font-size: 15px;
+    font-weight: bold;
+    border-radius: 0;
+    margin-top: 12px;
+}
