@@ -93,7 +93,7 @@ function Home() {
     }, []);
 
     useEffect(() => {
-        axios.get('https://cosmeticbe-production.up.railway.app/api/subcategories')
+        axios.get('http://localhost:8080/api/subcategories')
             .then(response => {
                 setSubCategories(response.data);
 

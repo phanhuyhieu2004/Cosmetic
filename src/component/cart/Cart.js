@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./Cart.css";
+import {useNavigate} from "react-router-dom";
 
 function Cart() {
     const [cartId, setCartId] = useState(null);
@@ -8,7 +9,7 @@ function Cart() {
     const [totalPrice, setTotalPrice] = useState(0);
     const user = JSON.parse(localStorage.getItem("user"));
     const [images, setImages] = useState([]);
-
+const navigate=useNavigate();
     useEffect(() => {
         axios.get('http://localhost:8080/api/images')
             .then(response => setImages(response.data))
@@ -107,6 +108,39 @@ function Cart() {
                 console.error("Error removing item", error);
             });
     };
+    const calculateTotalPrice = () => {
+        const total = cartItems.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
+        setTotalPrice(total);
+    };
+
+    useEffect(() => {
+        calculateTotalPrice();
+    }, [cartItems]);
+
+    const handleCheckout = async () => {
+        if (!user || !user.id) {
+            alert("Bạn cần đăng nhập để thực hiện thanh toán.");
+            return;
+        }
+
+        try {
+            // Gửi yêu cầu thanh toán
+            await axios.post('http://localhost:8080/api/orders', {
+                accountId: user.id,
+                items: cartItems,
+                totalPrice: totalPrice
+            });
+            // Hiển thị thông báo thành công
+            alert("Đơn hàng của bạn đã được tạo thành công.");
+
+           navigate("/home")
+        } catch (error) {
+            console.log("cartItem",cartItems);
+
+            console.error("Lỗi khi thanh toán", error);
+            alert("Có lỗi xảy ra khi thanh toán. Vui lòng thử lại.");
+        }
+    };
 
     return (
         <>
@@ -153,7 +187,7 @@ function Cart() {
                                                                 </div>
                                                                 <div className="media-right">
                                                                     <div className="item-info">
-                                                                    <h3 className="intem-title">
+                                                                        <h3 className="intem-title">
                                                                             <a href="/home">{item.product.name}</a>
                                                                         </h3>
                                                                         <p>{item.variant?.name}</p>
@@ -209,7 +243,9 @@ function Cart() {
                                                 <p>Tổng tiền: <span>{totalPrice}.000₫</span></p>
                                             </div>
                                             <div className="summary-button">
-                                                <a className="checkout-btn btnred "href="">THANH TOÁN</a>
+                                                <button className="checkout-btn btnred" onClick={handleCheckout}>THANH
+                                                    TOÁN
+                                                </button>
                                             </div>
                                         </div>
                                     </div>

@@ -10,6 +10,8 @@ import Login from "./component/login/Login";
 import Register from "./component/register/Register";
 import Products from "./component/product/Products";
 import PrivateRoute from "./PrivateRouter";
+import Orders from "./component/order/Orders";
+import Order from "./component/item/Order";
 
 
 function App() {
@@ -17,7 +19,7 @@ function App() {
         <div className="App">
             <Routes>
 
-                <Route element={<PrivateRoute redirectTo="/login" />}>
+                <Route element={<PrivateRoute redirectTo="/login"/>}>
                     <Route
                         path="/cart"
                         element={
@@ -28,8 +30,29 @@ function App() {
 
                             </>
                         }
+                    /> <Route
+                    path="/orders"
+                    element={
+                        <>
+                            <Header/>
+                            <Orders/>
+                            <Footer/>
+
+                        </>
+                    }
+                />
+                    <Route
+                    path="/order/:id"
+                    element={
+                        <>
+                            <Header/>
+                            <Order/>
+                            <Footer/>
+
+                        </>
+                    }
+                />
                     />
-                     />
                     {/* Thêm các route riêng tư khác tại đây */}
                 </Route>
                 <Route path="/home" element={
@@ -39,7 +62,7 @@ function App() {
                         <Footer/>
                     </>
                 }
-           />
+                />
 
 
                 <Route
