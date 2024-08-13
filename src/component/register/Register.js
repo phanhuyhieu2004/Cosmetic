@@ -12,7 +12,7 @@ function Register() {
     }
 
     const handleSubmit = (event) => {
-        event.preventDefault(); // Ngăn chặn form tự động gửi đi và tải lại trang
+        event.preventDefault();
 
 
 

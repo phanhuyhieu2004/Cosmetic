@@ -102,27 +102,35 @@ function Home() {
                     2: 4,
                     3: 8
                 };
+                // Tạo một đối tượng defaultSubcategories với các giá trị mặc định. Đây là một đối tượng ánh xạ ID của các danh mục chính đến ID của các danh mục con. Ví dụ, danh mục chính với ID 1 có danh mục con với ID 1, danh mục chính với ID 2 có danh mục con với ID 4, và danh mục chính với ID 3 có danh mục con với ID 8
                 setSelectedSubcategories(defaultSubcategories);
             })
             .catch(error => console.error('Lỗi không lấy được danh mục con:', error));
     }, []);
 
+// xử lý khi người dùng bấm vào các danh mục con khác thì sẽ lấy được id của danh mục cha,con đó
     const handleSubcategoryClick = (subcategoryId, categoryId) => {
+        // tự động truyền giá trị hiện tại của trạng thái vào tham số=) prev đang chứa giá trị hiện tại trước khi thay đổi
         setSelectedSubcategories(prev => ({
+            // sao chép giá trị hiện tại vào đối tượng mới
             ...prev,
+            // khi chon danh mục chính,con thì thuộc tính trong đối tượng cũng sẽ thay đổi
             [categoryId]: subcategoryId
         }));
     };
-    console.log("danh mục con", subCategories);
+
+    // Thiết lập các thuộc tính trong slide
     const settings = {
+        // ô điều hướng
         dots: true,
-        infinite: true,
+        // hiển thị slide
         slidesToShow: 1,
+        // số phần tử được lướt sang
         slidesToScroll: 1,
-        arrows: true,
         autoplay: true,
-        autoplaySpeed: 1000
+        autoplaySpeed: 1000,
     };
+    console.log("GTMD",selectedSubcategories);
 
     return (
         <main className="main-content">
@@ -154,11 +162,14 @@ function Home() {
                             <div className="list-product">
                                 <ul className="nav product-menu">
                                     {subCategories
+                                        //  filter được sử dụng để lọc danh sách subCategories,
+                                        //  chỉ giữ lại các danh mục con thuộc về danh mục cha  mà có ID trùng với category.id.
                                         .filter(subcategory => subcategory.categories.id === category.id)
                                         .map(subcategory => (
                                             <li key={subcategory.id} className="product-item">
                                                 <a
                                                     className={`nav-link ${selectedSubcategories[category.id] === subcategory.id ? 'active' : ''}`}
+                                                    // selectedSubcategories[category.id] lấy giá trị của danh mục con đã chọn cho danh mục chính có ID là category.id.
                                                     href="#"
                                                     onClick={(e) => {
                                                         e.preventDefault();

@@ -1,6 +1,6 @@
 import "./Product.css";
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import axios from "axios";
 
 function Product() {
@@ -12,6 +12,7 @@ function Product() {
     const [variants, setVariants] = useState([]);
     const [selectedVariant, setSelectedVariant] = useState(null);
     const [hasVariants, setHasVariants] = useState(false);
+    const  navigate=useNavigate();
     const user = JSON.parse(localStorage.getItem("user"));
 
     const handleIncrease = () => setQuantity(quantity + 1);
@@ -22,46 +23,71 @@ function Product() {
     const nextSlide = () => setCurrenIndex((prevIndex) => Math.min(prevIndex + 1, slides.length - 1));
     const handleThumbnailClick = (index) => setCurrenIndex(index);
 
-    const addToCart = () => {
-        // If the product has variants, ensure a variant is selected
+    const addToCart = async () => {
+
         if (hasVariants && !selectedVariant) {
             alert("Vui lòng chọn một biến thể.");
             return;
         }
 
-        // Check if product quantity is available
         if (product.quantity <= 0) {
             alert("Sản phẩm đã hết hàng.");
             return;
         }
 
-        // Default to variant ID 0 if no variants are present
         const variantId = hasVariants ? selectedVariant?.id : null;
 
-        axios.post('http://localhost:8080/api/cart/add', null, {
-            params: {
-                accountId: user.id,
-                productId: product.id,
-                variantId: variantId,
-                quantity: quantity
-            }
-        })
-            .then(response => {
-                alert("Sản phẩm đã được thêm vào giỏ hàng");
-            })
-            .catch(error => {
-                console.error("Lỗi không thêm được sản phẩm vào giỏ hàng:", error);
-                alert("Đã xảy ra lỗi khi thêm sản phẩm vào giỏ hàng.");
+        try {
+            await axios.post('http://localhost:8080/api/cart/add', null, {
+                params: {
+                    accountId: user.id,
+                    productId: product.id,
+                    variantId: variantId,
+                    quantity: quantity
+                }
             });
+            alert("Sản phẩm đã được thêm vào giỏ hàng");
+        } catch (error) {
+            console.error("Lỗi không thêm được sản phẩm vào giỏ hàng:", error);
+            alert("Đã xảy ra lỗi khi thêm sản phẩm vào giỏ hàng.");
+        }
     };
+    const buyNow = async () => {
 
+        if (hasVariants && !selectedVariant) {
+            alert("Vui lòng chọn một biến thể.");
+            return;
+        }
+
+        if (product.quantity <= 1) {
+            alert("Sản phẩm đã hết hàng.");
+            return;
+        }
+
+        const variantId = hasVariants ? selectedVariant?.id : null;
+
+        try {
+            await axios.post('http://localhost:8080/api/cart/add', null, {
+                params: {
+                    accountId: user.id,
+                    productId: product.id,
+                    variantId: variantId,
+                    quantity: quantity
+                }
+            });
+            alert("Sản phẩm đã được thêm vào giỏ hàng");
+            navigate("/cart"); // Chuyển hướng đến trang giỏ hàng
+        } catch (error) {
+            console.error("Lỗi không thêm được sản phẩm vào giỏ hàng:", error);
+            alert("Đã xảy ra lỗi khi thêm sản phẩm vào giỏ hàng.");
+        }
+    };
     useEffect(() => {
         axios.get('http://localhost:8080/api/variants')
             .then(response => {
                 const variantsData = response.data;
                 setVariants(variantsData);
 
-                // Check if the product has any variants
                 const productHasVariants = variantsData.some(variant => variant.products.id === product.id);
                 setHasVariants(productHasVariants);
             })
@@ -200,7 +226,7 @@ function Product() {
                                     )}
                                     <div className="quantity-area">
                                         <div className="quantity-title">
-                                            Số lượng :
+                                            Số lượng : Đang có {product.quantity} sản phẩm trong kho
                                         </div>
                                         <div className="box-quantity">
                                             <button type="button" className="btn-quantity" onClick={handleDecrease}>
@@ -208,7 +234,7 @@ function Product() {
                                                     <path d="M10 0v2H0V0z"></path>
                                                 </svg>
                                             </button>
-                                            <input type="text" className="quantity-input" value={quantity} min={1} readOnly />
+                                            <input type="text" className="quantity-input" value={quantity} min={1} max={product.quantity} readOnly />
                                             <button type="button" className="btn-quantity" onClick={handleIncrease}>
                                                 <svg focusable="false" className="icon icon--plus" viewBox="0 0 10 10" role="presentation">
                                                     <path d="M6 4h4v2H6v4H4V6H0V4h4V0h2v4z"></path>
@@ -216,15 +242,15 @@ function Product() {
                                             </button>
                                         </div>
                                         <div className="addCart-area">
-                                            <button className={`btn-addtocart ${product?.quantity <= 0 ? "disable" : "enable"}`} onClick={addToCart}
-                                                    disabled={product?.quantity <= 0}>
-                                                <span>{product?.quantity > 0 ? "THÊM VÀO GIỎ" : "HẾT HÀNG"}</span>
+                                            <button className={`btn-addtocart ${product?.quantity <= 1? "disable" : "enable"}`} onClick={addToCart}
+                                                    disabled={product?.quantity <= 1}>
+                                                <span>{product?.quantity > 1 ? "THÊM VÀO GIỎ" : "HẾT HÀNG"}</span>
                                             </button>
                                         </div>
                                     </div>
                                     <div className="addCart-area">
-                                        <button className="buy-now" type="button">
-                                            <a href={"/cart"}>MUA NGAY</a>
+                                        <button className={`buy-now ${product?.quantity <= 1 ? "disable" : "enable"}`}  onClick={buyNow}>
+                                            <span>{product?.quantity > 1 ? "MUA NGAY" : "HẾT HÀNG"}</span>
                                         </button>
                                     </div>
                                 </div>

@@ -128,7 +128,7 @@
     width: 100%;
 }
 .qty-btn {
-
+    cursor: pointer;
         float: left;
         font-weight: 500;
         padding: 0;
@@ -209,6 +209,7 @@
     font-size: 24px;
 }
 .checkout-btn.btnred{
+    cursor: pointer;
     display: block;
     background: red;
     color: #fff;
@@ -222,4 +223,8 @@
     margin-top: 12px;
     width: 100%;
     border: none;
+}
+.item-info > p:first-of-type{
+color: deeppink;
+    font-weight: bold;
 }

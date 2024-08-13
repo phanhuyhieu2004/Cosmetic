@@ -11,7 +11,7 @@ import Register from "./component/register/Register";
 import Products from "./component/product/Products";
 import PrivateRoute from "./PrivateRouter";
 import Orders from "./component/order/Orders";
-import Order from "./component/item/Order";
+import Order from "./component/order/Order";
 
 
 function App() {

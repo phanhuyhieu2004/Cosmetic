@@ -123,6 +123,16 @@ const navigate=useNavigate();
             return;
         }
 
+        // Kiểm tra số lượng sản phẩm có trong giỏ hàng
+        const insufficientStock = cartItems.some(item => {
+            return item.quantity > item.product.quantity;
+        });
+
+        if (insufficientStock) {
+            alert("Một hoặc nhiều sản phẩm trong giỏ hàng của bạn không đủ hàng. Vui lòng kiểm tra lại số lượng.");
+            return;
+        }
+
         try {
             // Gửi yêu cầu thanh toán
             await axios.post('http://localhost:8080/api/orders', {
@@ -133,10 +143,9 @@ const navigate=useNavigate();
             // Hiển thị thông báo thành công
             alert("Đơn hàng của bạn đã được tạo thành công.");
 
-           navigate("/home")
+            // Chuyển hướng đến trang đơn hàng
+            navigate("/orders");
         } catch (error) {
-            console.log("cartItem",cartItems);
-
             console.error("Lỗi khi thanh toán", error);
             alert("Có lỗi xảy ra khi thanh toán. Vui lòng thử lại.");
         }
@@ -191,15 +200,16 @@ const navigate=useNavigate();
                                                                             <a href="/home">{item.product.name}</a>
                                                                         </h3>
                                                                         <p>{item.variant?.name}</p>
+                                                                        <p>Số lượng trong kho : {item.product.quantity} sản phẩm</p>
                                                                     </div>
                                                                     <div className="item-price">
-                                                                        <p><span>{item.product.price}.000₫</span></p>
+                                                                        <p><span>{((item.product.price)*1000).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</span></p>
                                                                     </div>
                                                                 </div>
                                                                 <div className="media-total">
                                                                     <div className="item-total-price">
                                                                         <div className="item-price">
-                                                                            <span className="line-item-total">{item.product.price * item.quantity}.000₫</span>
+                                                                            <span className="line-item-total">{((item.product.price * item.quantity)*1000).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</span>
                                                                         </div>
                                                                     </div>
                                                                     <div className="item-quantity">
@@ -240,7 +250,7 @@ const navigate=useNavigate();
                                         <div className="order-summary-block">
                                             <h2 className="summary-title">Thông tin đơn hàng</h2>
                                             <div className="summary-total">
-                                                <p>Tổng tiền: <span>{totalPrice}.000₫</span></p>
+                                                <p>Tổng tiền: <span>{(totalPrice*1000).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</span></p>
                                             </div>
                                             <div className="summary-button">
                                                 <button className="checkout-btn btnred" onClick={handleCheckout}>THANH

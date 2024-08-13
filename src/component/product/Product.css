@@ -455,4 +455,7 @@
 .btn-addtocart.disable{
     opacity: 0.5;
 }
+.buy-now.disable{
+    opacity: 0.5;
+}
 

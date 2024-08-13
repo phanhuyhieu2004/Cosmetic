@@ -4,6 +4,7 @@ import axios from "axios";
 import {Link, useNavigate} from "react-router-dom";
 
 function Header() {
+    // lưu id của danh mục hiện tại khi di chuột vào
     const [hoveredCategoryId, setHoveredCategoryId] = useState(null);
     const [categories, setCategories] = useState([]);
     const [subCategories, setSubCategories] = useState([]);
@@ -12,7 +13,8 @@ function Header() {
 
     const toggleMenu = () => setIsOpen(prev => !prev);
 
-    const user = JSON.parse(localStorage.getItem("user")); // Lấy thông tin người dùng từ localStorage
+    const user = JSON.parse(localStorage.getItem("user"));
+    console.log("người dung",user)// Lấy thông tin người dùng từ localStorage
     useEffect(() => {
         axios.get('http://localhost:8080/api/categories')
             .then(response => {
@@ -27,6 +29,7 @@ function Header() {
         navigate("/login");
     };
     useEffect(() => {
+        // thay đổi dựa vào việc người dùng di chuột sang danh mục khác
         if (hoveredCategoryId) {
             axios.get(`http://localhost:8080/api/subcategories/${hoveredCategoryId}`)
                 .then(response => {
@@ -37,6 +40,7 @@ function Header() {
                 });
         }
     }, [hoveredCategoryId]);
+
 
     const handleMouseEnter = (categoryId) => {
         setHoveredCategoryId(categoryId);
@@ -100,6 +104,7 @@ function Header() {
                                     <li
                                         key={category.id}
                                         className="sub-menu-lv1"
+                                        // lấy được id của danh mục muốn hiển thị ra các mục con bằng cách di chuột vào mục đó
                                         onMouseEnter={() => handleMouseEnter(category.id)}
                                     >
                                         <a href="/home">
@@ -107,6 +112,7 @@ function Header() {
 
                                             <i className="fa fa-chevron-down"></i>
                                         </a>
+                                        {/*id của danh mục khi di chuột vào trùng với id của danh mục đang hiển thị thì nó sẽ lấy ra các mục con dưới dm đó*/}
                                         {hoveredCategoryId === category.id && (
                                             <ul className="menu-sub menu-list-lv1">
                                                 {subCategories.map(subCategory => (

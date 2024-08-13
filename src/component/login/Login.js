@@ -30,10 +30,11 @@ function Login() {
             pass: password
         })
             .then(response => {
-                console.log(response.data); // Kiểm tra dữ liệu trả về
+                console.log(response.data);
                 const  user  = response.data;
-
+console.log("tài khoản là ",user)
                 if (user) {
+                    // lưu tài khoản vừa đăng nhâập vaào localStrage
                     localStorage.setItem("user", JSON.stringify(user));
                     alert("Đăng nhập thành công!");
                     navigate("/home");
