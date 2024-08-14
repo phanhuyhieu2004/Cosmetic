@@ -22,7 +22,8 @@ function Orders() {
 
     return (
         <>
-            <table style={{border:"5px solid black" }}>
+            <h1>Đơn hàng của bạn</h1>
+            <table style={{border:"5px solid black",margin:"50px auto" }}>
                 <thead>
                 <tr>
                     <th>Mã Đơn</th>
@@ -40,10 +41,10 @@ function Orders() {
                     .map(item => (
                     <tr key={item.id}>
                         <td>{item.id}</td>
-                        <td>{item.createdAt}</td>
+                        <td>{item.createdAt[2]}-{item.createdAt[1]}-{item.createdAt[0]}</td>
                         <td>{item.paymentStatus}</td>
                         <td>{item.shippingStatus}</td>
-                        <td>{item.totalPrice}</td>
+                        <td>{((item.totalPrice)*1000).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</td>
                         <td><Link to={`/order/${item.id}`}>Xem chi tiet</Link></td>
                     </tr>
                 ))}

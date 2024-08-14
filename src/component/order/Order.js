@@ -15,31 +15,35 @@ function Order() {
     console.log("sp là",order);
     return(
         <>
-            <a href={"/orders"}>Về đơn hàng</a>
-            <h1>Thông tin chi tiết về đơn {id} của tài khoản {user.name}</h1>
-            <table style={{border: "5px solid black"}}>
-                <thead>
-                <tr>
-                    <th>STT</th>
-                    <th>Sản phẩm</th>
-                    <th>Biến thể</th>
-                    <th>Số lượng</th>
-                    <th>Tổng giá</th>
-                </tr>
-                </thead>
-                <tbody>
-                {order.map((item, index) => (
-                        <tr key={item.id}>
-                            <td>{index + 1}</td>
-                            <td>{item.product.name}</td>
-                            <td>{item.variant? item.variant.name :'Không có'}</td>
-                            <td>{item.quantity}</td>
-                            <td>{item.price}</td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+            <main className="main-content">
 
+                < div className="order container" style={{height:"420px"}}>
+                    <a href={"/orders"}>Về đơn hàng</a>
+                    <h1>Thông tin chi tiết về đơn {id} của tài khoản {user.name}</h1>
+                    <table style={{border: "5px solid black", margin: "50px auto"}}>
+                        <thead>
+                        <tr>
+                            <th>STT</th>
+                            <th>Sản phẩm</th>
+                            <th>Loại</th>
+                            <th>Số lượng</th>
+                            <th>Tổng giá</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {order.map((item, index) => (
+                            <tr key={item.id}>
+                                <td>{index + 1}</td>
+                                <td>{item.product.name}</td>
+                                <td>{item.variant ? item.variant.name : 'Không có'}</td>
+                                <td>{item.quantity}</td>
+                                <td>{((item.price)*1000).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</td>
+                            </tr>
+                        ))}
+                        </tbody>
+                    </table>
+                </div>
+            </main>
         </>
     )
 }

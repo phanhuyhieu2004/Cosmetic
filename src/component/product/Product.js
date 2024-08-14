@@ -221,7 +221,7 @@ function Product() {
                                         </div>
                                     ) : (
                                         <div className="no-variants">
-                                            <p>Sản phẩm này không có biến thể.</p>
+                                            <p>Sản phẩm này không có loại nào.</p>
                                         </div>
                                     )}
                                     <div className="quantity-area">

@@ -129,7 +129,7 @@ const navigate=useNavigate();
         });
 
         if (insufficientStock) {
-            alert("Một hoặc nhiều sản phẩm trong giỏ hàng của bạn không đủ hàng. Vui lòng kiểm tra lại số lượng.");
+            alert("Một hoặc nhiều sản phẩm trong giỏ hàng của bạn không đủ hàng. Vui lòng kiểm tra lại số lượng trong kho của các sp.");
             return;
         }
 

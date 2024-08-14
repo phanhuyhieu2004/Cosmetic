@@ -53,7 +53,6 @@ function App() {
                     }
                 />
                     />
-                    {/* Thêm các route riêng tư khác tại đây */}
                 </Route>
                 <Route path="/home" element={
                     <>
@@ -85,6 +84,7 @@ function App() {
                         </>
                     }
                 />
+
                 <Route
                     path="/register"
                     element={

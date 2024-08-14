@@ -213,3 +213,11 @@ svg {
 .css-1t1j96h-MuiPaper-root-MuiDialog-paper{
   max-width: 2000px !important;
 }
+th,td{
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+  vertical-align: middle;
+  word-wrap: break-word;
+
+}

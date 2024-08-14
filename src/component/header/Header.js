@@ -133,7 +133,7 @@ function Header() {
                                     <span></span>
                                 </a></li>
                                 <li className="sub-menu-lv1"><a href="/home">
-                                    ĐĂNG KÝ KINH DOANH
+                                    LIÊN HỆ
                                     <span></span>
                                 </a></li>
 
