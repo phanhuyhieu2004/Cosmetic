@@ -101,8 +101,8 @@ console.log("số lượng sp trong từng dm là ",productCountBySubcategory)
 
                 const defaultSubcategories = {
                     1: 1,
-                    2: 4,
-                    3: 8
+                    2: 5,
+                    3: 9
                     // Đây chính là các thuộc tính với giá trị tương ứng trong đối tượng này
                 };
                 // Tạo một đối tượng defaultSubcategories với các giá trị mặc định. Đây là một đối tượng ánh xạ ID của các danh mục chính đến ID của các danh mục con. Ví dụ, danh mục chính với ID 1 có danh mục con với ID 1, danh mục chính với ID 2 có danh mục con với ID 4, và danh mục chính với ID 3 có danh mục con với ID 8
@@ -134,7 +134,7 @@ console.log("số lượng sp trong từng dm là ",productCountBySubcategory)
         autoplaySpeed: 1000,
     };
     console.log("GTMD",selectedSubcategories);
-
+console.log("DMC",subCategories);
     return (
         <main className="main-content">
             <div className="slider-container">

@@ -46,7 +46,7 @@
     font-size: 24px;
     font-weight: 700;
     margin: 0;
-    text-transform: uppercase;
+    text-transform: capitalize;
 }
 
 .nav {
@@ -223,7 +223,7 @@
     color: #333; /* Màu chữ */
     text-align: center; /* Căn giữa văn bản */
     padding: 50px; /* Khoảng cách bên trong */
-    position: absolute;
+
 
     width: 100%; /* Đảm bảo footer bao phủ toàn bộ chiều rộng của trang */
 }

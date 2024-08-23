@@ -10,11 +10,13 @@ function Header() {
     const [subCategories, setSubCategories] = useState([]);
     const navigate = useNavigate();
     const [isOpen, setIsOpen] = useState(false);
+    const [searchResults, setSearchResults] = useState([]);
+    const [images, setImages] = useState([]);
 
+const[search,setSearch]=useState('');
     const toggleMenu = () => setIsOpen(prev => !prev);
 
     const user = JSON.parse(localStorage.getItem("user"));
-    console.log("người dung",user)// Lấy thông tin người dùng từ localStorage
     useEffect(() => {
         axios.get('http://localhost:8080/api/categories')
             .then(response => {
@@ -45,8 +47,31 @@ function Header() {
     const handleMouseEnter = (categoryId) => {
         setHoveredCategoryId(categoryId);
     };
+    const handleSearchChange = async (e) => {
+        setSearch(e.target.value);
+        if (e.target.value.length > 0) {
+            try {
+                const response = await axios.get(`http://localhost:8080/api/products/product/search?name=${e.target.value}`);
+                setSearchResults(response.data);
+            } catch (error) {
+                console.error('Lỗi khi tìm kiếm:', error);
+            }
+        } else {
+            setSearchResults([]); // Nếu không có từ khóa thì xóa kết quả tìm kiếm
+        }
+    };
 
+const handleSearchSubmit=(e)=>{
+    e.preventDefault();
+    navigate(`/search?name=${search}`);
+}
+    useEffect(() => {
+        axios.get('http://localhost:8080/api/images')
+            .then(response => setImages(response.data))
+            .catch(error => console.error('Lỗi không lấy được ảnh:', error));
+    }, []);
 
+console.log("tim cái gì",searchResults);
     return (
         <>
             <header>
@@ -60,44 +85,78 @@ function Header() {
                             />
                         </a>
                     </div>
-                    <div className="search-box">
-                        <input type="text" placeholder="Tìm kiếm sản phẩm..."/>
-                        <button className="search-btn">
-                            <i className="fas fa-search"/>
-                        </button>
-                    </div>
+
+                        <div className="search-box">
+                                <input type="text" placeholder="Tìm kiếm sản phẩm..." value={search}
+                                       onChange={handleSearchChange}/>
+                                <button className="search-btn" onClick={handleSearchSubmit}>
+                                    <i className="fas fa-search"/>
+                                </button>
+
+                            <div className={`dropdown-search ${searchResults.length>0?"search-smart":""}`} >
+                                <div className="resultsContent resultsdata">
+                                    {searchResults.length > 0 ? (
+                                        searchResults.map(result => (
+                                            <div key={result.id} className="item-ult">
+                                                <div className="thumbs">
+                                                    <Link to={`/product/${result.id}`}>
+                                                        {images.filter(image => image.products.id === result.id)[0]&& (
+                                                            <img src={images.filter(image =>image.products.id === result.id)[0].name} alt={result.name}/>
+
+                                                        )
+
+                                                        }
+                                                    </Link>
+                                                </div>
+                                                <div className="title-search">
+                                                    <Link to={`/product/${result.id}`}>{result.name}</Link>
+                                                    <p className="f-initial">{((result.price)* 1000).toLocaleString('vi-VN',{style:'currency',currency:'VND'})}</p>
+                                                </div>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <p>No results found</p>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+
                     <div className="nav-icons">
                         <a href="#" className="icon">
                             <i className="far fa-heart"/>
                             <span>Yêu thích</span>
                         </a>
                         <a href="/cart" className="icon">
-                            <i className="fas fa-shopping-cart"/>
-                            <span>Giỏ hàng</span>
-                        </a>
-                        {user ? (
-                            <div className="dropdown">
+                                <i className="fas fa-shopping-cart"/>
+                                <span>Giỏ hàng</span>
+                            </a>
+                            {user ? (
+                                <div className="dropdown">
             <span className="icon" onClick={toggleMenu}>
                 <i className="fas fa-user"/>
                 <span>
                     Xin chào, {user.name} <i className="fa fa-angle-down" aria-hidden="true"></i>
                 </span>
             </span>
-                                {isOpen && (
-                                    <div className="dropdown-menu">
-                                        <a href="/orders">Đơn mua</a>
-                                        <span onClick={handleLogout}>Đăng xuất</span>
-                                    </div>
-                                )}
-                            </div>) : (<a href="/login" className="icon">
-                                <i className="fas fa-user"/>
-                                <span>Đăng nhập / Đăng ký</span>
-                            </a>
-                        )}
-                    </div>
+                                    {isOpen && (
+                                        <div className="dropdown-menu">
+                                            <a href="/orders">Đơn mua</a>
+                                            {user && user.role === 1 ? (
+                                                <a href="/list">Quản lý sản phẩm</a>
+                                            ) : ('')}
+
+                                            <span onClick={handleLogout}>Đăng xuất</span>
+                                        </div>
+                                    )}
+                                </div>) : (<a href="/login" className="icon">
+                                    <i className="fas fa-user"/>
+                                    <span>Đăng nhập / Đăng ký</span>
+                                </a>
+                            )}
+                        </div>
                 </div>
                 <div className="header-bottom">
-                    <div className="container">
+                <div className="container">
                         <nav className="main-menu">
                             <ul className="menu-list">
                                 {categories.map(category => (

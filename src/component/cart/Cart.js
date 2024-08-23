@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, {useState, useEffect} from "react";
 import axios from "axios";
 import "./Cart.css";
 import {useNavigate} from "react-router-dom";
@@ -9,7 +9,7 @@ function Cart() {
     const [totalPrice, setTotalPrice] = useState(0);
     const user = JSON.parse(localStorage.getItem("user"));
     const [images, setImages] = useState([]);
-const navigate=useNavigate();
+    const navigate = useNavigate();
     useEffect(() => {
         axios.get('http://localhost:8080/api/images')
             .then(response => setImages(response.data))
@@ -18,18 +18,18 @@ const navigate=useNavigate();
 
     useEffect(() => {
         if (!user || !user.id) {
-            console.error("User is not logged in or user ID is missing");
+            console.error("Không có tài khoản thì không xem được giỏ hàng");
             return;
         }
 
-        // Lấy cartId từ API
+        // Lấy cart Id từ API
         const fetchCartId = async () => {
             try {
                 console.log("User ID:", user.id);
-                const response = await axios.get(`http://localhost:8080/api/cart/cartId`, { params: { accountId: user.id } });
+                const response = await axios.get(`http://localhost:8080/api/cart/cartId`, {params: {accountId: user.id}});
                 setCartId(response.data);
             } catch (error) {
-                console.error("Error fetching cart ID", error);
+                console.error("Lỗi không lấy được cart ID", error);
             }
         };
 
@@ -38,29 +38,27 @@ const navigate=useNavigate();
 
     useEffect(() => {
         if (cartId) {
-            // Lấy cartItems từ API
+            // Lấy cart Items từ API
             const fetchCartItems = async () => {
                 try {
-                    const response = await axios.get(`http://localhost:8080/api/cart/cartItems`, { params: { cartId } });
+                    const response = await axios.get(`http://localhost:8080/api/cart/cartItems`, {params: {cartId}});
                     setCartItems(response.data);
                 } catch (error) {
-                    console.error("Error fetching cart items", error);
+                    console.error("Lỗi k lấy được mục giỏ hàng", error);
                 }
             };
 
             fetchCartItems();
         }
     }, [cartId]);
-
     useEffect(() => {
         const calculateTotalPrice = () => {
             const total = cartItems.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
             setTotalPrice(total);
         };
-
+        // lặp qua từng phần tử trong mảng và áp dụng  hàm cộng dồn sum + (item.product.price * item.quantity)), kết quả của mỗi lần lặp sẽ được truyền vào lần lặp tiếp theo.
         calculateTotalPrice();
     }, [cartItems]);
-
     const handleQuantityChange = async (itemId, newQuantity) => {
         if (newQuantity < 1) return; // Ngăn không cho số lượng giảm xuống dưới 1
 
@@ -69,12 +67,16 @@ const navigate=useNavigate();
         try {
             // Gửi yêu cầu cập nhật số lượng
             await axios.post('http://localhost:8080/api/cart/updateQuantity', null, {
-                params: { itemId, newQuantity }
+                params: {itemId, newQuantity}
             });
 
             // Cập nhật giỏ hàng sau khi thay đổi số lượng
             const updatedItems = cartItems.map(item =>
-                item.id === itemId ? { ...item, quantity: newQuantity, totalPrice: item.product.price * newQuantity } : item
+                item.id === itemId ? {
+                    ...item,
+                    quantity: newQuantity,
+                    totalPrice: item.product.price * newQuantity
+                } : item
             );
             setCartItems(updatedItems);
 
@@ -83,9 +85,11 @@ const navigate=useNavigate();
             setTotalPrice(newTotalPrice);
 
         } catch (error) {
-            console.error("Error updating quantity", error);
+            console.error("Lỗi k cập nhật số lượng đc", error);
         }
     };
+    console.log("mục giỏ hàng", cartItems)
+
     const handleRemoveItem = (itemId) => {
         // Xác nhận xóa sản phẩm
         if (!window.confirm("Bạn có chắc chắn muốn xóa sản phẩm này?")) return;
@@ -93,11 +97,11 @@ const navigate=useNavigate();
         // Gửi yêu cầu xóa sản phẩm
         axios.delete(`http://localhost:8080/api/cart/remove/${itemId}`)
             .then(() => {
-                // Cập nhật giỏ hàng sau khi xóa
+                // Cập nhật giỏ hàng sau khi xóa,bỏ đi cái sp vừa bị xóa bằng cách lọc
                 const updatedItems = cartItems.filter(item => item.id !== itemId);
                 setCartItems(updatedItems);
 
-                // Cập nhật tổng tiền
+                // Cập nhật tổng tiền ở mảng mới
                 const newTotalPrice = updatedItems.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
                 setTotalPrice(newTotalPrice);
 
@@ -105,17 +109,10 @@ const navigate=useNavigate();
                 alert("Sản phẩm đã được xóa khỏi giỏ hàng.");
             })
             .catch(error => {
-                console.error("Error removing item", error);
+                console.error("Lỗi k xóa được mục này", error);
             });
     };
-    const calculateTotalPrice = () => {
-        const total = cartItems.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
-        setTotalPrice(total);
-    };
 
-    useEffect(() => {
-        calculateTotalPrice();
-    }, [cartItems]);
 
     const handleCheckout = async () => {
         if (!user || !user.id) {
@@ -127,7 +124,7 @@ const navigate=useNavigate();
         const insufficientStock = cartItems.some(item => {
             return item.quantity > item.product.quantity;
         });
-
+// Nếu như số lượng đặt mua của sp lớn hon sl trong kho thì sẽ k đuc thanh toán
         if (insufficientStock) {
             alert("Một hoặc nhiều sản phẩm trong giỏ hàng của bạn không đủ hàng. Vui lòng kiểm tra lại số lượng trong kho của các sp.");
             return;
@@ -172,10 +169,12 @@ const navigate=useNavigate();
                                     <div className="mainCart-detail">
                                         <div className="heading-cart heading-row">
                                             <h1>Giỏ hàng của bạn</h1>
-                                            <p>Bạn đang có <strong className="count-cart">{cartItems.length} sản phẩm</strong> trong giỏ hàng</p>
+                                            <p>Bạn đang có <strong className="count-cart">{cartItems.length} sản
+                                                phẩm</strong> trong giỏ hàng</p>
                                         </div>
                                         <div className="list-pageform-cart">
-                                            <form onSubmit={(e) => e.preventDefault()}> {/* Ngăn không cho form submit */}
+                                            <form
+                                                onSubmit={(e) => e.preventDefault()}> {/* Ngăn không cho form submit */}
                                                 <div className="cart-row">
                                                     <div className="table-cart">
                                                         {cartItems.map((item) => (
@@ -200,16 +199,25 @@ const navigate=useNavigate();
                                                                             <a href="/home">{item.product.name}</a>
                                                                         </h3>
                                                                         <p>{item.variant?.name}</p>
-                                                                        <p>Số lượng trong kho : {item.product.quantity} sản phẩm</p>
+                                                                        <p>Số lượng trong kho
+                                                                            : {item.product.quantity} sản phẩm</p>
                                                                     </div>
                                                                     <div className="item-price">
-                                                                        <p><span>{((item.product.price)*1000).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</span></p>
+                                                                        <p>
+                                                                            <span>{((item.product.price) * 1000).toLocaleString('vi-VN', {
+                                                                                style: 'currency',
+                                                                                currency: 'VND'
+                                                                            })}</span></p>
                                                                     </div>
                                                                 </div>
                                                                 <div className="media-total">
                                                                     <div className="item-total-price">
                                                                         <div className="item-price">
-                                                                            <span className="line-item-total">{((item.product.price * item.quantity)*1000).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</span>
+                                                                            <span
+                                                                                className="line-item-total">{((item.product.price * item.quantity) * 1000).toLocaleString('vi-VN', {
+                                                                                style: 'currency',
+                                                                                currency: 'VND'
+                                                                            })}</span>
                                                                         </div>
                                                                     </div>
                                                                     <div className="item-quantity">
@@ -219,19 +227,28 @@ const navigate=useNavigate();
                                                                                 type="button"
                                                                                 onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
                                                                             >
-                                                                                <svg width="18" height="18" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                                                                    <rect height="1" width="18" y="9" x="1"></rect>
+                                                                                <svg width="18" height="18"
+                                                                                     viewBox="0 0 20 20"
+                                                                                     xmlns="http://www.w3.org/2000/svg">
+                                                                                    <rect height="1" width="18" y="9"
+                                                                                          x="1"></rect>
                                                                                 </svg>
                                                                             </button>
-                                                                            <input className="item-qty" type="text" value={item.quantity} readOnly />
+                                                                            <input className="item-qty" type="text"
+                                                                                   value={item.quantity} readOnly/>
                                                                             <button
                                                                                 className="qty-btn"
                                                                                 type="button"
+                                                                                disabled={item.quantity >= item.product.quantity}
                                                                                 onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
                                                                             >
-                                                                                <svg width="18" height="18" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                                                                    <rect x="9" y="1" width="1" height="17"></rect>
-                                                                                    <rect x="1" y="9" width="17" height="1"></rect>
+                                                                                <svg width="18" height="18"
+                                                                                     viewBox="0 0 20 20"
+                                                                                     xmlns="http://www.w3.org/2000/svg">
+                                                                                    <rect x="9" y="1" width="1"
+                                                                                          height="17"></rect>
+                                                                                    <rect x="1" y="9" width="17"
+                                                                                          height="1"></rect>
                                                                                 </svg>
                                                                             </button>
                                                                         </div>
@@ -250,7 +267,10 @@ const navigate=useNavigate();
                                         <div className="order-summary-block">
                                             <h2 className="summary-title">Thông tin đơn hàng</h2>
                                             <div className="summary-total">
-                                                <p>Tổng tiền: <span>{(totalPrice*1000).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</span></p>
+                                                <p>Tổng tiền: <span>{(totalPrice * 1000).toLocaleString('vi-VN', {
+                                                    style: 'currency',
+                                                    currency: 'VND'
+                                                })}</span></p>
                                             </div>
                                             <div className="summary-button">
                                                 <button className="checkout-btn btnred" onClick={handleCheckout}>THANH

@@ -1,30 +1,38 @@
 import "./Product.css";
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
 import axios from "axios";
 
 function Product() {
-    const { id } = useParams();
+    const {id} = useParams();
     const [quantity, setQuantity] = useState(1);
     const [product, setProduct] = useState(null);
     const [slides, setSlides] = useState([]);
+    // Chỉ số của ảnh hiện tại đang được hiển thị trong trình xem ảnh
     const [currenIndex, setCurrenIndex] = useState(0);
     const [variants, setVariants] = useState([]);
+    // đối tượng biến thể được chọn
     const [selectedVariant, setSelectedVariant] = useState(null);
+    // check liệu sp có biến thể không?
     const [hasVariants, setHasVariants] = useState(false);
-    const  navigate=useNavigate();
+    const navigate = useNavigate();
     const user = JSON.parse(localStorage.getItem("user"));
 
-    const handleIncrease = () => setQuantity(quantity + 1);
-    const handleDecrease = () => setQuantity(quantity > 1 ? quantity - 1 : 1);
+    const handleIncrease = () => setQuantity((prevQuantity) => Math.min(prevQuantity + 1, product.quantity));
+    const handleDecrease = () => setQuantity((prevQuantity) => Math.max(prevQuantity - 1, 1));
     const handleVariantClick = (variant) => setSelectedVariant(variant);
-
+    console.log("biến thể được chọn ", selectedVariant)
+// chỉ số của slide đằng trước luôn bằng hoặc lon hơn chỉ số của slide đầu tiên là chỉ số 0
     const prevSlide = () => setCurrenIndex((prevIndex) => Math.max(prevIndex - 1, 0));
+    // không được để chỉ số của slide tiếp theo vượt qua chỉ số của slide cuoi
     const nextSlide = () => setCurrenIndex((prevIndex) => Math.min(prevIndex + 1, slides.length - 1));
     const handleThumbnailClick = (index) => setCurrenIndex(index);
 
     const addToCart = async () => {
-
+        if (!user || !user.id) {
+            alert("Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng.");
+            return;
+        }
         if (hasVariants && !selectedVariant) {
             alert("Vui lòng chọn một biến thể.");
             return;
@@ -36,7 +44,7 @@ function Product() {
         }
 
         const variantId = hasVariants ? selectedVariant?.id : null;
-
+console.log("các biến thể la la ",variantId);
         try {
             await axios.post('http://localhost:8080/api/cart/add', null, {
                 params: {
@@ -48,12 +56,15 @@ function Product() {
             });
             alert("Sản phẩm đã được thêm vào giỏ hàng");
         } catch (error) {
-            console.error("Lỗi không thêm được sản phẩm vào giỏ hàng:", error);
+            console.error("Bạn cần đăng nhập để thêm sp vào giỏ hàng", error);
             alert("Đã xảy ra lỗi khi thêm sản phẩm vào giỏ hàng.");
         }
     };
     const buyNow = async () => {
-
+        if (!user || !user.id) {
+            alert("Bạn cần đăng nhập để mua hàng.");
+            return;
+        }
         if (hasVariants && !selectedVariant) {
             alert("Vui lòng chọn một biến thể.");
             return;
@@ -74,11 +85,12 @@ function Product() {
                     variantId: variantId,
                     quantity: quantity
                 }
+                // params: Đây là một đối tượng chứa các cặp key-value, mà khi được truyền vào yêu cầu, sẽ tự động được chuyển đổi thành chuỗi query và gắn vào cuối URL.
             });
             alert("Sản phẩm đã được thêm vào giỏ hàng");
-            navigate("/cart"); // Chuyển hướng đến trang giỏ hàng
+            navigate("/cart");
         } catch (error) {
-            console.error("Lỗi không thêm được sản phẩm vào giỏ hàng:", error);
+            console.error("Bạn cần đăng nhập để mua sp :", error);
             alert("Đã xảy ra lỗi khi thêm sản phẩm vào giỏ hàng.");
         }
     };
@@ -87,13 +99,14 @@ function Product() {
             .then(response => {
                 const variantsData = response.data;
                 setVariants(variantsData);
-
+                // Kiểm tra xem có ít nhất một biến thể trong variantsData mà thuộc tính products.id của nó khớp với product.id không.
                 const productHasVariants = variantsData.some(variant => variant.products.id === product.id);
                 setHasVariants(productHasVariants);
+
             })
             .catch(error => console.error('Lỗi không lấy được biến thể:', error));
     }, [product]);
-
+    console.log("Yes/No", hasVariants)
     useEffect(() => {
         axios.get(`http://localhost:8080/api/images/${id}`)
             .then(response => setSlides(response.data))
@@ -143,7 +156,7 @@ function Product() {
                                     <div className="wrapbox-image">
                                         <div className="productGallery_thumb">
                                             <ul className="productSlick-thumb slick-slider">
-                                                <div className="slick-list draggable" style={{ height: "fit-content" }}>
+                                                <div className="slick-list draggable" style={{height: "fit-content"}}>
                                                     <div className="slick-track">
                                                         {slides.map((slide, index) => (
                                                             <li key={index} className="slick-slide">
@@ -151,6 +164,7 @@ function Product() {
                                                                     src={slide.name}
                                                                     alt={`Thumbnail ${index + 1}`}
                                                                     className={`product-thumb__item ${currenIndex === index ? 'active' : ''}`}
+                                                                    // lấy được chỉ số của ảnh thu nhỏ
                                                                     onClick={() => handleThumbnailClick(index)}
                                                                 />
                                                             </li>
@@ -168,6 +182,7 @@ function Product() {
                                             </button>
                                             <img
                                                 src={slides[currenIndex]?.name || ''}
+                                                // dựa vào chỉ số để tìm obj ở chỉ số đó trong mảng và lấy ra tên của obj đó
                                                 className="slide-image"
                                                 alt="Không có ảnh"
                                             />
@@ -206,7 +221,9 @@ function Product() {
                                                                         className={`swatch-element`}
                                                                         key={variant.id}
                                                                         onClick={() => handleVariantClick(variant)}
+
                                                                     >
+                                                                        {/*biến thể được chonj truyền vào haàm */}
                                                                         <label
                                                                             className={`variant ${selectedVariant?.id === variant.id ? 'sd' : ''}`}
                                                                         >
@@ -229,28 +246,34 @@ function Product() {
                                             Số lượng : Đang có {product.quantity} sản phẩm trong kho
                                         </div>
                                         <div className="box-quantity">
-                                            <button type="button" className="btn-quantity" onClick={handleDecrease}>
-                                                <svg focusable="false" className="icon icon--minus" viewBox="0 0 10 2" role="presentation">
+                                            <button type="button" className="btn-quantity" onClick={handleDecrease}                 disabled={quantity <= 1}>
+                                                <svg focusable="false" className="icon icon--minus" viewBox="0 0 10 2"
+                                                     role="presentation">
                                                     <path d="M10 0v2H0V0z"></path>
                                                 </svg>
                                             </button>
-                                            <input type="text" className="quantity-input" value={quantity} min={1} max={product.quantity} readOnly />
-                                            <button type="button" className="btn-quantity" onClick={handleIncrease}>
-                                                <svg focusable="false" className="icon icon--plus" viewBox="0 0 10 10" role="presentation">
+                                            <input type="text" className="quantity-input" value={quantity} min={1}
+                                                   max={product.quantity} readOnly/>
+                                            <button type="button" className="btn-quantity"                 disabled={quantity >= product.quantity} onClick={handleIncrease}>
+                                                <svg focusable="false" className="icon icon--plus" viewBox="0 0 10 10"
+                                                     role="presentation">
                                                     <path d="M6 4h4v2H6v4H4V6H0V4h4V0h2v4z"></path>
                                                 </svg>
                                             </button>
                                         </div>
                                         <div className="addCart-area">
-                                            <button className={`btn-addtocart ${product?.quantity <= 1? "disable" : "enable"}`} onClick={addToCart}
-                                                    disabled={product?.quantity <= 1}>
-                                                <span>{product?.quantity > 1 ? "THÊM VÀO GIỎ" : "HẾT HÀNG"}</span>
+                                            <button
+                                                className={`btn-addtocart ${product?.quantity <= 0 ? "disable" : "enable"}`}
+                                                onClick={addToCart}
+                                                disabled={product?.quantity <= 0}>
+                                                <span>{product?.quantity > 0 ? "THÊM VÀO GIỎ" : "HẾT HÀNG"}</span>
                                             </button>
                                         </div>
                                     </div>
                                     <div className="addCart-area">
-                                        <button className={`buy-now ${product?.quantity <= 1 ? "disable" : "enable"}`}  onClick={buyNow}>
-                                            <span>{product?.quantity > 1 ? "MUA NGAY" : "HẾT HÀNG"}</span>
+                                        <button className={`buy-now ${product?.quantity <= 0 ? "disable" : "enable"}`}
+                                                onClick={buyNow}>
+                                            <span>{product?.quantity > 0 ? "MUA NGAY" : "HẾT HÀNG"}</span>
                                         </button>
                                     </div>
                                 </div>
