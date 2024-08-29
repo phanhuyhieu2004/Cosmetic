@@ -15,6 +15,14 @@ import Order from "./component/order/Order";
 import Contact from "./component/contact/Contact";
 import Searchs from "./component/home/Searchs";
 import Create from "./component/create/Create";
+import List from "./component/list/List";
+import Update from "./component/update/Update";
+import ListVariants from "./component/list/ListVariants";
+import CreateVariant from "./component/create/CreateVariant";
+import UpdateVariant from "./component/update/UpdateVariant";
+import Statistical from "./component/statistical/Statistical";
+import OrdersAdmin from "./component/order/OrdersAdmin";
+import OrderAdmin from "./component/order/OrderAdmin";
 
 
 function App() {
@@ -25,11 +33,86 @@ function App() {
 
                 <Route element={<PrivateRoute redirectTo="/login"/>}>
                     <Route
+                        path="/create"
+                        element={
+                            <>
+                                <Header/>
+                                <Create/>
+                                <Footer/>
+                            </>
+                        }
+                    />   <Route
+                        path="/statistical"
+                        element={
+                            <>
+                                <Header/>
+                                <Statistical/>
+                                <Footer/>
+                            </>
+                        }
+                    /> <Route
+                        path="/create/:id/:name"
+                        element={
+                            <>
+                                <Header/>
+                                <CreateVariant/>
+                                <Footer/>
+                            </>
+                        }
+                    /> <Route
+                        path="/variant/:variantId/:id/:name"
+                        element={
+                            <>
+                                <Header/>
+                                <UpdateVariant/>
+                                <Footer/>
+                            </>
+                        }
+                    /> <Route
+                        path="/variants/:id/:name"
+                        element={
+                            <>
+                                <Header/>
+                                <ListVariants/>
+                                <Footer/>
+                            </>
+                        }
+                    /><Route
+                        path="/product/update/:id"
+                        element={
+                            <>
+                                <Header/>
+                                <Update/>
+                                <Footer/>
+                            </>
+                        }
+                    />
+                    <Route
                         path="/cart"
                         element={
                             <>
                                 <Header/>
                                 <Cart/>
+                                <Footer/>
+
+                            </>
+                        }
+                    /><Route
+                        path="/list"
+                        element={
+                            <>
+                                <Header/>
+                                <List/>
+                                <Footer/>
+
+                            </>
+                        }
+                    /><Route
+                        path="/orders/admin"
+                        element={
+                            <>
+                                <Header/>
+                                <OrdersAdmin/>
                                 <Footer/>
 
                             </>
@@ -55,9 +138,33 @@ function App() {
 
                         </>
                     }
+                /> <Route
+                    path="/order/admin/:id"
+                    element={
+                        <>
+                            <Header/>
+                            <OrderAdmin/>
+                            <Footer/>
+
+                        </>
+                    }
                 />
                     />
                 </Route>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 <Route path="/home" element={
                     <>
                         <Header/>
@@ -104,15 +211,6 @@ function App() {
                         <>
                             <Header/>
                             <Contact/>
-                            <Footer/>
-                        </>
-                    }
-                /> <Route
-                    path="/create"
-                    element={
-                        <>
-                            <Header/>
-                            <Create/>
                             <Footer/>
                         </>
                     }

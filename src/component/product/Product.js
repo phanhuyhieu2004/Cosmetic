@@ -2,6 +2,7 @@ import "./Product.css";
 import React, {useEffect, useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
 import axios from "axios";
+import ReactQuill from "react-quill";
 
 function Product() {
     const {id} = useParams();
@@ -287,7 +288,12 @@ console.log("các biến thể la la ",variantId);
                                     </div>
                                     <div className="nav-tabContent">
                                         <div className="product-content">
-                                            <p>{product?.description}</p>
+
+                                            <ReactQuill
+                                                value={product?.description}
+                                                readOnly={true}
+                                                theme={"bubble"}
+                                            />
                                         </div>
                                     </div>
                                 </div>

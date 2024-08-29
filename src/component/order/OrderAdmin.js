@@ -2,13 +2,12 @@ import {Link, useParams} from "react-router-dom";
 import React, {useEffect, useState} from "react";
 import axios from "axios";
 import {Pagination} from "@mui/material";
-
-function Order() {
+function OrderAdmin() {
     const user = JSON.parse(localStorage.getItem("user"));
-const [currentPage,setCurrentPage]=useState(1);
-const [orderPage]=useState(10);
-const indexOfLastOrder=currentPage*orderPage;
-const indexOfFirstOrder=indexOfLastOrder-orderPage;
+    const [currentPage,setCurrentPage]=useState(1);
+    const [orderPage]=useState(10);
+    const indexOfLastOrder=currentPage*orderPage;
+    const indexOfFirstOrder=indexOfLastOrder-orderPage;
     const {id}=useParams();
     const [order, setOrder] = useState([]);
     const currentOrder=order.slice(indexOfFirstOrder,indexOfLastOrder);
@@ -102,45 +101,45 @@ const indexOfFirstOrder=indexOfLastOrder-orderPage;
                                         }
                                         </ul>
                                     </div>                                    <div className="form-content">
-                                        <div className="form-title">
-                                            <h1>Thông tin chi tiết về đơn {id} của tài khoản {user.name}</h1>
-                                        </div>
-                                        <Link to={`/orders`}><button className="btn-add">
-                                           Về danh sách đơn hàng
-                                        </button></Link>
-                                        <table style={{border: "5px solid black", margin: "50px auto"}}>
-                                            <thead>
-                                            <tr>
-                                                <th>STT</th>
-                                                <th>Sản phẩm</th>
-                                                <th>Loại</th>
-                                                <th>Số lượng</th>
-                                                <th>Tổng giá</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            {currentOrder.map((item, index) => (
-                                                <tr key={item.id}>
-                                                    <td>{index + 1}</td>
-                                                    <td>{item.product.name}</td>
-                                                    <td>{item.variant ? item.variant.name : 'Không có'}</td>
-                                                    <td>{item.quantity}</td>
-                                                    <td>{((item.price) * 1000).toLocaleString('vi-VN', {
-                                                        style: 'currency',
-                                                        currency: 'VND'
-                                                    })}</td>
-                                                </tr>
-                                            ))}
-                                            </tbody>
-                                        </table>
-                                        <div style={{marginLeft: '400px'}}>
-                                            <Pagination
-                                                count={Math.ceil(order.length / orderPage)}
-                                                page={currentPage}
-                                                onChange={handlePageChange}
-                                            />
-                                        </div>
+                                    <div className="form-title">
+                                        <h1>Thông tin chi tiết về đơn {id}</h1>
                                     </div>
+                                    <Link to={`/orders/admin`}><button className="btn-add">
+                                        Về danh sách đơn hàng
+                                    </button></Link>
+                                    <table style={{border: "5px solid black", margin: "50px auto"}}>
+                                        <thead>
+                                        <tr>
+                                            <th>STT</th>
+                                            <th>Sản phẩm</th>
+                                            <th>Loại</th>
+                                            <th>Số lượng</th>
+                                            <th>Tổng giá</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {currentOrder.map((item, index) => (
+                                            <tr key={item.id}>
+                                                <td>{index + 1}</td>
+                                                <td>{item.product.name}</td>
+                                                <td>{item.variant ? item.variant.name : 'Không có'}</td>
+                                                <td>{item.quantity}</td>
+                                                <td>{((item.price) * 1000).toLocaleString('vi-VN', {
+                                                    style: 'currency',
+                                                    currency: 'VND'
+                                                })}</td>
+                                            </tr>
+                                        ))}
+                                        </tbody>
+                                    </table>
+                                    <div style={{marginLeft: '400px'}}>
+                                        <Pagination
+                                            count={Math.ceil(order.length / orderPage)}
+                                            page={currentPage}
+                                            onChange={handlePageChange}
+                                        />
+                                    </div>
+                                </div>
                                 </div>
                             </div>
                         </main>
@@ -151,4 +150,4 @@ const indexOfFirstOrder=indexOfLastOrder-orderPage;
     )
 }
 
-export default Order;
+export default OrderAdmin;

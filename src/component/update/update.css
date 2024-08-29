@@ -1,52 +1,7 @@
-.form-time{
-    display: flex;
-}
+
 input::placeholder,
 textarea::placeholder {
     color: #bbb !important;
-}
-.title-revenue{
-    margin: 10px auto;
-    font-size: 16px;
-}
-.form-time input[type="date"],input[type="number"],input[type="month"]{
-    box-shadow: 1px 5px 2px pink;
-    position: relative;
-    color: deeppink;
-    border: 1px solid var(--shop-color-button);
-    background: #fff;
-    margin-top: 20px;
-    text-transform: initial;
-    font-size: 14px;
-    border-radius: 4px;
-    padding: 10px 25px;
-}
-.form-date{
-    margin-right: 20px;
-}
-button{
-    position: relative;
-    display: inline-block;
-    z-index: 1;
-    overflow: hidden;
-    color: #fff;
-    background-color: var(--shop-color-button);
-    border: 0;
-    padding: 12px 28px;
-    font-size: 13px;
-    font-weight: 500;
-    text-align: center;
-    letter-spacing: 1px;
-    outline: none;
-    border-radius: 4px;
-    text-transform: uppercase;
-    -webkit-transition: color 0.45s cubic-bezier(0.785, 0.135, 0.15, 0.86), border 0.45s cubic-bezier(0.785, 0.135, 0.15, 0.86);
-    transition: color 0.45s cubic-bezier(0.785, 0.135, 0.15, 0.86), border 0.45s cubic-bezier(0.785, 0.135, 0.15, 0.86);
-
-
-}
-.form-button{
-    margin: 20px auto;
 }
 select{
     padding: 10px;

@@ -6,6 +6,7 @@ function Searchs() {
     const [variants, setVariants] = useState([]);
     const [images, setImages] = useState([]);
     const [results, setResults] = useState([]);
+    const [searchTerm,setSearchTerm]=useState('');
     const location = useLocation();
 function searchProduct() {
     // khởi tạo một đối tượng URLSearchParams với chuỗi truy vấn từ location.search
@@ -13,7 +14,7 @@ function searchProduct() {
     // sử dụng phương thức .get() của URLSearchParams để lấy giá trị của tham số truy vấn name.
     const searchTerm = queryParams.get('name');
     console.log("Tìm kiếm với từ khóa:", searchTerm);
-
+setSearchTerm(searchTerm);
     if (searchTerm) {
         axios.get(`http://localhost:8080/api/products/product/search?name=${searchTerm}`)
             .then(response => {
@@ -63,7 +64,7 @@ function searchProduct() {
                 <section className="product product-1">
                     <div className="container container-product">
                         <div className="product-head">
-                            <h2 className="title">Kết quả tiìm kiem là </h2>
+                            <h2 className="title">Kết quả tiìm kiem là {searchTerm}</h2>
                         </div>
                         <div className="product-content-1">
                             <div className="list product-list-1">

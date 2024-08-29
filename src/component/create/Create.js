@@ -2,10 +2,12 @@ import {Link, useNavigate} from "react-router-dom";
 import ReactQuill from "react-quill";
 import './create.css';
 import 'react-quill/dist/quill.snow.css';
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import axios from "axios";
 
 function Create() {
+    const user = JSON.parse(localStorage.getItem("user"));
+
     const navigate = useNavigate();
     // khởi tạo mảng với 5 đối tượng null
     const [files, setFiles] = useState([null, null, null, null, null]);
@@ -32,9 +34,11 @@ function Create() {
         // Khi người dùng chọn một tệp, hàm này lấy tệp đầu tiên từ e.target.files.
         if (!selectedFile) return;
 
-        const validExtensions = ["jpg", "jpeg", "png", "gif"];
+        const validExtensions = ["jpg", "jpeg", "png", "gif", "webp"];
         const fileExtension = selectedFile.name.split('.').pop().toLowerCase();
-
+        // selectedFile.name.split('.') chia tên file thành các phần(mảng chưứa caác chuối con) dựa trên dấu chấm (.).
+        // .pop() lấy phần cuối cùng của mảng kết quả, tức là phần mở rộng của file.
+        //         .toLowerCase() chuyển phần mở rộng này thành chữ thường để dễ so sánh.
         if (!validExtensions.includes(fileExtension)) {
             alert("Không phải ảnh, vui lòng chọn lại.");
             setFiles(prev => {
@@ -49,9 +53,12 @@ function Create() {
             });
             return;
         }
+        // FileReader là một API của JavaScript dùng để đọc nội dung của file. Nó có thể đọc file dưới nhiều định dạng khác nhau, trong trường hợp này là định dạng URL (Data URL).
 
         const reader = new FileReader();
+        // readAsDataURL(selectedFile) đọc nội dung của file và chuyển đổi nó thành một URL dữ liệu (data URL). URL này có thể được sử dụng để hiển thị hình ảnh trong trang web mà không cần tải lên server.
         reader.readAsDataURL(selectedFile);
+        // reader.onloadend: Sự kiện này được kích hoạt khi FileReader hoàn thành việc đọc file.
         reader.onloadend = () => {
             setFiles(prev => {
                 const updated = [...prev];
@@ -65,6 +72,14 @@ function Create() {
             });
         };
     };
+    console.log("Anh", files);
+    console.log("Anh xem truoc", filePreviews);
+
+    function checkSpecial(str) {
+        const specialChars = /[!@#$%^&*(),.?":{}|<>]/g;
+        return specialChars.test(str);
+
+    }
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -75,8 +90,15 @@ function Create() {
             alert("Vui lòng chọn ảnh cho tất cả các vị trí.");
             return;
         }
-        //
-        // // Các bước tiếp theo sau khi kiểm tra thành công
+        if (checkSpecial(productName)) {
+            alert("Tên sản phẩm có kí tự đặc biệt, mời nhập lại!")
+            return;
+        }
+        if (checkSpecial(brand)) {
+            alert("Tên nhãn hàng có kí tự đặc biệt, mời nhập lại!")
+            return;
+        }
+
 
         const formData = {
             name: productName,
@@ -112,6 +134,18 @@ function Create() {
 
     return (
         <main>
+            <div className="breadcrumb-shop">
+                <div className="container container-pd1">
+                    <div className="breadcrumb-list">
+                        <ol className="breadcrumb breadcrumb-arrows">
+                            <li><a href="/home"><span>Trang chủ</span></a></li>
+                            <li><a href="/list"><span>Quản lý sản phẩm</span></a></li>
+                            <li><a href="/create"><span>Thêm sản phẩm</span></a></li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+
             <meta name="robots" content="noindex, nofollow"/>
             <section className="archive__page page-single">
                 <div className="container">
@@ -122,10 +156,10 @@ function Create() {
                                     <div className="clearfix">
                                         <img
                                             src="https://static-00.iconduck.com/assets.00/cs-cat-admin-icon-512x512-3l4exe6y.png"
-                                            className="avatar" alt="không thể xem anh"/>
+                                            className="avatar" alt="không thể xem ảnh"/>
                                         <div className="info-text">
                                             <div className="fullname">
-                                                <span>ADMIN</span>
+                                                <span>{user.name}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -135,16 +169,57 @@ function Create() {
                                                 <i className="fa fa-book-open-reader"></i>Trang chủ
                                             </Link>
                                         </li>
+                                        {user && user.role === 0 ? (
+
+                                            <li>
+                                                <Link to="/list">
+                                                    <i className="fa fa-bars"/> Danh sách sản phẩm
+                                                </Link>
+                                            </li>) : ('')
+                                        }
+                                        {user && user.role === 0 ? (
+
+                                            <li>
+                                                <Link to="/create">
+                                                    <i className="fa fa-plus"></i> Thêm sản phẩm
+                                                </Link>
+                                            </li>
+                                        ) : ('')
+                                        }
+                                        {user && user.role === 0 ? (
+
+                                            <li>
+                                                <Link to="/statistical">
+                                                    <i className=" fa fa-chart-simple"></i> Thống kê
+                                                </Link>
+                                            </li>
+                                        ) : ('')
+                                        } {user && user.role === 0 ? (
+
                                         <li>
-                                            <Link to="/list">
-                                                <i className="fa fa-bars"/> Danh sách sản phẩm
+                                            <Link to="/orders/admin">
+                                                <i className="fa fa-list"></i> Quản lý đơn hàng
                                             </Link>
                                         </li>
+                                    ) : ('')
+                                    }
+                                        {user && user.role === 1 ? (
+
+                                            <li>
+                                                <Link to="/orders">
+                                                    <i className="fa fa-list"></i> Quản lý đơn hàng
+                                                </Link>
+                                            </li>
+                                        ) : ('')
+                                        } {user && user.role === 1 ? (
+
                                         <li>
-                                            <Link to="/create">
-                                                <i className="fa fa-plus"></i> Thêm sản phẩm
+                                            <Link to="/cart">
+                                                <i className="fas fa-shopping-cart"/> Giỏ hàng
                                             </Link>
                                         </li>
+                                    ) : ('')
+                                    }
                                     </ul>
                                 </div>
                                 <div className="form-content">
@@ -153,53 +228,54 @@ function Create() {
                                     </div>
                                     <form onSubmit={handleSubmit}>
                                         <div className="form-profile">
-                                            {files.map((file, index) => (
-                                                <div className="edit-row" key={index}>
-                                                    <div className="col-1">
-                                                        Chọn ảnh sản phẩm {index + 1}<span>(*)</span>
-                                                    </div>
-                                                    <div className="col-2 row-avatar" style={{display: 'flex'}}>
-                                                        <div className="image-upload">
-                                                            <input
-                                                                type="file"
-                                                                id={`file-input-${index}`}
-                                                                accept=".jpg, .jpeg, .png, .gif"
-                                                                onChange={handleFileChange(index)}
-                                                                style={{display: 'none'}}
-                                                            />
-                                                            <label htmlFor={`file-input-${index}`}>
-                                                                <div className="image-preview">
-                                                                    {filePreviews[index] ? (
-                                                                        <img src={filePreviews[index]}
-                                                                             alt={`Ảnh ${index + 1}`} width="200"
-                                                                             height="200"/>
-                                                                    ) : (
-                                                                        <div className="image-icon">
-                                                                            <svg
-                                                                                xmlns="http://www.w3.org/2000/svg"
-                                                                                fill="none"
-                                                                                viewBox="0 0 24 24"
-                                                                                stroke="currentColor"
-                                                                                width="50"
-                                                                                height="50"
-                                                                            >
-                                                                                <path
-                                                                                    strokeLinecap="round"
-                                                                                    strokeLinejoin="round"
-                                                                                    strokeWidth={2}
-                                                                                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                                                                                />
-                                                                            </svg>
-                                                                        </div>
-                                                                    )}
-                                                                </div>
-                                                            </label>
+                                            <div style={{display: 'flex'}}>
+                                                {files.map((file, index) => (
+                                                    <div className="edit-row" key={index}>
+                                                        <div className="col-1">
+                                                            Chọn ảnh sản phẩm {index + 1}<span>(*)</span>
+                                                        </div>
+                                                        <div className="col-2 row-avatar">
+                                                            <div className="image-upload">
+                                                                <input
+                                                                    type="file"
+                                                                    id={`file-input-${index}`}
+                                                                    accept=".jpg, .jpeg, .png, .gif"
+                                                                    onChange={handleFileChange(index)}
+                                                                    style={{display: 'none'}}
+                                                                />
+                                                                <label htmlFor={`file-input-${index}`}>
+                                                                    <div className="image-preview">
+                                                                        {filePreviews[index] ? (
+                                                                            <img src={filePreviews[index]}
+                                                                                 alt={`Ảnh ${index + 1}`} width="200"
+                                                                                 height="200"/>
+                                                                        ) : (
+                                                                            <div className="image-icon">
+                                                                                <svg
+                                                                                    xmlns="http://www.w3.org/2000/svg"
+                                                                                    fill="none"
+                                                                                    viewBox="0 0 24 24"
+                                                                                    stroke="currentColor"
+                                                                                    width="50"
+                                                                                    height="50"
+                                                                                >
+                                                                                    <path
+                                                                                        strokeLinecap="round"
+                                                                                        strokeLinejoin="round"
+                                                                                        strokeWidth={2}
+                                                                                        d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                                                                                    />
+                                                                                </svg>
+                                                                            </div>
+                                                                        )}
+                                                                    </div>
+                                                                </label>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            ))}
+                                                ))}
+                                            </div>
 
-                                            {/* Product Name */}
                                             <div className="edit-row edit-row-email">
                                                 <div className="col-1 col-md-4">Tên sản phẩm <span>(*)</span></div>
                                                 <div className="col-2">
@@ -217,7 +293,6 @@ function Create() {
                                                 </div>
                                             </div>
 
-                                            {/* Brand */}
                                             <div className="edit-row">
                                                 <div className="col-1">Nhãn hàng <span>(*)</span></div>
                                                 <div className="col-2">
@@ -232,7 +307,6 @@ function Create() {
                                                 </div>
                                             </div>
 
-                                            {/* Price and Quantity */}
                                             <div style={{display: 'flex'}}>
                                                 <div className="edit-row">
                                                     <div className="col-1">Gía :<span>(*)</span></div>
@@ -254,7 +328,7 @@ function Create() {
                                                             className="input form-control"
                                                             type="number"
                                                             placeholder="Nhập số lượng"
-                                                            value={quantity }
+                                                            value={quantity}
                                                             onChange={(e) => setQuantity(e.target.value)}
                                                             required
                                                         />
@@ -262,7 +336,6 @@ function Create() {
                                                 </div>
                                             </div>
 
-                                            {/* Description */}
                                             <div className="edit-row">
                                                 <div className="col-1">Mô tả <span>(*)</span></div>
                                                 <div className="col-2">
@@ -275,7 +348,6 @@ function Create() {
                                                 </div>
                                             </div>
 
-                                            {/* Category Dropdown */}
                                             <div className="edit-row">
                                                 <div className="col-1">Danh mục <span>(*)</span></div>
                                                 <div className="col-2">
@@ -295,13 +367,16 @@ function Create() {
                                                 </div>
                                             </div>
 
-                                            {/* Submit Button */}
                                             <div className="edit-row">
-                                                <div className="col-1"></div>
+                                                <div className="col-1"/>
                                                 <div className="col-2">
-                                                    <button type="submit" className="btn btn-primary">Lưu thay đổi
-                                                    </button>
+                                                    <div className="action">
+                                                        <button className="btn-form">
+                                                            Thêm sản phẩm
+                                                        </button>
+                                                    </div>
                                                 </div>
+                                                <div className="col-3"/>
                                             </div>
                                         </div>
                                     </form>

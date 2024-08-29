@@ -1,30 +1,46 @@
-import {Link, useParams} from "react-router-dom";
-import React, {useEffect, useState} from "react";
+import {Link, useNavigate, useParams} from "react-router-dom";
+import React, {useState} from "react";
 import axios from "axios";
-import {Pagination} from "@mui/material";
 
-function Order() {
+
+function CreateVariant() {
     const user = JSON.parse(localStorage.getItem("user"));
-const [currentPage,setCurrentPage]=useState(1);
-const [orderPage]=useState(10);
-const indexOfLastOrder=currentPage*orderPage;
-const indexOfFirstOrder=indexOfLastOrder-orderPage;
-    const {id}=useParams();
-    const [order, setOrder] = useState([]);
-    const currentOrder=order.slice(indexOfFirstOrder,indexOfLastOrder);
 
-    const handlePageChange=(event,value)=>{
-        setCurrentPage(value);
+    const {id,name}=useParams();
+    const [nameVariant, setNameVariant] = useState("");
+    const navigate=useNavigate();
+    function checkSpecial(str) {
+        const specialChars = /[!@#$%^&*(),.?":{}|<>]/g;
+        return specialChars.test(str);
+
+    }
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+
+
+        if (checkSpecial(nameVariant)) {
+            alert("Tên sản phẩm có kí tự đặc biệt, mời nhập lại!")
+            return;
+        }
+
+
+        const formData = {
+            name: nameVariant,
+
+        };
+
+        axios.post(`http://localhost:8080/api/variants/${id}`, formData)
+            .then(response => {
+                alert("Thêm biến thể thành công!");
+                navigate(`/variants/${id}/${name}`);
+            })
+            .catch(error => {
+                console.error('Lỗi không thêm được biến thể:', error);
+            });
     };
-    useEffect(() => {
-        axios.get(`http://localhost:8080/api/orders/items/${id}`)
-            .then(response=>setOrder(response.data))
-            .catch(error => console.error("Lỗi khong lấy được sản phẩm trong đơn hàng",error));
-    }, [id]);
-    console.log("sp là",order);
     return(
         <>
-
             <main>
                 <meta name="robots" content="noindex, nofollow"/>
                 <section className="archive__page page-single">
@@ -101,45 +117,51 @@ const indexOfFirstOrder=indexOfLastOrder-orderPage;
                                         ) : ('')
                                         }
                                         </ul>
-                                    </div>                                    <div className="form-content">
+                                    </div>
+                                    <div className="form-content">
                                         <div className="form-title">
-                                            <h1>Thông tin chi tiết về đơn {id} của tài khoản {user.name}</h1>
+                                            <h1>Thêm biến thể của {name}</h1>
                                         </div>
-                                        <Link to={`/orders`}><button className="btn-add">
-                                           Về danh sách đơn hàng
-                                        </button></Link>
-                                        <table style={{border: "5px solid black", margin: "50px auto"}}>
-                                            <thead>
-                                            <tr>
-                                                <th>STT</th>
-                                                <th>Sản phẩm</th>
-                                                <th>Loại</th>
-                                                <th>Số lượng</th>
-                                                <th>Tổng giá</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            {currentOrder.map((item, index) => (
-                                                <tr key={item.id}>
-                                                    <td>{index + 1}</td>
-                                                    <td>{item.product.name}</td>
-                                                    <td>{item.variant ? item.variant.name : 'Không có'}</td>
-                                                    <td>{item.quantity}</td>
-                                                    <td>{((item.price) * 1000).toLocaleString('vi-VN', {
-                                                        style: 'currency',
-                                                        currency: 'VND'
-                                                    })}</td>
-                                                </tr>
-                                            ))}
-                                            </tbody>
-                                        </table>
-                                        <div style={{marginLeft: '400px'}}>
-                                            <Pagination
-                                                count={Math.ceil(order.length / orderPage)}
-                                                page={currentPage}
-                                                onChange={handlePageChange}
-                                            />
-                                        </div>
+                                        <Link to={`/variants/${id}/${name}`}>
+                                            <button className="btn-add">
+                                                Danh sách biến thể
+                                            </button>
+                                        </Link>
+                                        <form onSubmit={handleSubmit}>
+                                            <div className="form-profile">
+
+                                                <div className="edit-row edit-row-email">
+                                                    <div className="col-1 col-md-4">Tên sản phẩm <span>(*)</span></div>
+                                                    <div className="col-2">
+                                                        <input
+                                                            className="input form-control"
+                                                            type="text"
+                                                            placeholder="Nhập tên"
+                                                            value={nameVariant}
+                                                            onChange={(e) => setNameVariant(e.target.value)}
+                                                            required
+                                                        />
+                                                        <p className="register-notify">
+                                                            Lưu ý: Tên biến thể phải tối thiểu từ 5 đến tối đa là 50 ký
+                                                            tự.
+                                                        </p>
+                                                    </div>
+                                                </div>
+
+
+                                                <div className="edit-row">
+                                                    <div className="col-1"/>
+                                                    <div className="col-2">
+                                                        <div className="action">
+                                                            <button className="btn-form">
+                                                                Thêm biến thể
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                    <div className="col-3"/>
+                                                </div>
+                                            </div>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
@@ -151,4 +173,4 @@ const indexOfFirstOrder=indexOfLastOrder-orderPage;
     )
 }
 
-export default Order;
+export default CreateVariant;

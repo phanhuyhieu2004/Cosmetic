@@ -1,30 +1,64 @@
-import {Link, useParams} from "react-router-dom";
 import React, {useEffect, useState} from "react";
 import axios from "axios";
-import {Pagination} from "@mui/material";
+import {Link} from "react-router-dom";
+import {Pagination, Tooltip} from "@mui/material";
+import {Close, Delete, Done, Edit, ExitToAppOutlined, ListAlt, RemoveRedEyeOutlined} from "@mui/icons-material";
 
-function Order() {
+function OrdersAdmin() {
     const user = JSON.parse(localStorage.getItem("user"));
-const [currentPage,setCurrentPage]=useState(1);
-const [orderPage]=useState(10);
-const indexOfLastOrder=currentPage*orderPage;
-const indexOfFirstOrder=indexOfLastOrder-orderPage;
-    const {id}=useParams();
-    const [order, setOrder] = useState([]);
-    const currentOrder=order.slice(indexOfFirstOrder,indexOfLastOrder);
-
+    const [orders, setOrders] = useState([]);
+    const [currentPage,setCurrentPage]=useState(1);
+    const [orderPerPage]=useState(10);
+    const indexOfLastOrder=currentPage*orderPerPage;
+    const indexOfFirstOrder=indexOfLastOrder-orderPerPage;
+    const currentOrders=orders.slice(indexOfFirstOrder,indexOfLastOrder);
     const handlePageChange=(event,value)=>{
         setCurrentPage(value);
-    };
+    }
+    function fetchOrders() {
+        axios.get(`http://localhost:8080/api/orders`)
+            .then(response => {
+                console.log(response.data);
+
+                setOrders(response.data);
+
+            })
+            .catch(error => console.error('Lỗi khi lấy đơn hàng:', error));
+
+    }
+
     useEffect(() => {
-        axios.get(`http://localhost:8080/api/orders/items/${id}`)
-            .then(response=>setOrder(response.data))
-            .catch(error => console.error("Lỗi khong lấy được sản phẩm trong đơn hàng",error));
-    }, [id]);
-    console.log("sp là",order);
+        fetchOrders();
+    }, []);
+    function updateOrderStatus(orderId) {
+        axios.put(`http://localhost:8080/api/orders/${orderId}`, {
+            paymentStatus: 'Hoàn thành',
+            shippingStatus: 'Hoàn thành'
+        })
+            .then(response => {
+
+                console.log('Trạng thái đơn hàng đã được cập nhật:', response.data);
+                fetchOrders();
+
+            })
+            .catch(error => console.error('Lỗi khi cập nhật đơn hàng:', error));
+    }
+    function updateOrderStatusFail(orderId) {
+        axios.put(`http://localhost:8080/api/orders/${orderId}`, {
+            paymentStatus: 'Hủy',
+            shippingStatus: 'Hủy'
+        })
+            .then(response => {
+
+                console.log('Trạng thái đơn hàng đã được cập nhật:', response.data);
+                fetchOrders();
+
+            })
+            .catch(error => console.error('Lỗi khi cập nhật đơn hàng:', error));
+    }
+
     return(
         <>
-
             <main>
                 <meta name="robots" content="noindex, nofollow"/>
                 <section className="archive__page page-single">
@@ -101,41 +135,60 @@ const indexOfFirstOrder=indexOfLastOrder-orderPage;
                                         ) : ('')
                                         }
                                         </ul>
-                                    </div>                                    <div className="form-content">
+                                    </div>
+                                    <div className="form-content">
                                         <div className="form-title">
-                                            <h1>Thông tin chi tiết về đơn {id} của tài khoản {user.name}</h1>
+                                            <h1>Đơn hàng của tài khoản {user.name}</h1>
                                         </div>
-                                        <Link to={`/orders`}><button className="btn-add">
-                                           Về danh sách đơn hàng
-                                        </button></Link>
+
                                         <table style={{border: "5px solid black", margin: "50px auto"}}>
                                             <thead>
                                             <tr>
-                                                <th>STT</th>
-                                                <th>Sản phẩm</th>
-                                                <th>Loại</th>
-                                                <th>Số lượng</th>
-                                                <th>Tổng giá</th>
+                                                <th>Mã Đơn</th>
+                                                <th>Ngày tạo</th>
+                                                <th>Trạng thái thanh toán</th>
+                                                <th>Trạng thái vận chuyển</th>
+                                                <th>Tổng đơn</th>
+                                                <th>Xem chi tiet</th>
+                                                <th>Hành động</th>
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            {currentOrder.map((item, index) => (
-                                                <tr key={item.id}>
-                                                    <td>{index + 1}</td>
-                                                    <td>{item.product.name}</td>
-                                                    <td>{item.variant ? item.variant.name : 'Không có'}</td>
-                                                    <td>{item.quantity}</td>
-                                                    <td>{((item.price) * 1000).toLocaleString('vi-VN', {
-                                                        style: 'currency',
-                                                        currency: 'VND'
-                                                    })}</td>
-                                                </tr>
-                                            ))}
+                                            {currentOrders
+
+
+                                                .map(item => (
+                                                    <tr key={item.id}>
+                                                        <td>{item.id}</td>
+                                                        <td>{item.createdAt[2]}-{item.createdAt[1]}-{item.createdAt[0]}</td>
+                                                        <td>{item.paymentStatus}</td>
+                                                        <td>{item.shippingStatus}</td>
+                                                        <td>{((item.totalPrice) * 1000).toLocaleString('vi-VN', {
+                                                            style: 'currency',
+                                                            currency: 'VND'
+                                                        })}</td>
+                                                        <td><Link to={`/order/admin/${item.id}`}>Xem chi tiet</Link></td>
+                                                        <td style={{display: "flex", borderBottom: 'none'}}>
+                                                            <Tooltip title="Hoàn thành">
+        <span onClick={() => updateOrderStatus(item.id)}>
+            <Done/>
+        </span>
+                                                            </Tooltip>
+                                                            <Tooltip title="Hủy">
+        <span onClick={() => updateOrderStatusFail(item.id)}>
+            <Close/>
+        </span>
+                                                            </Tooltip>
+
+                                                        </td>
+
+                                                    </tr>
+                                                ))}
                                             </tbody>
                                         </table>
                                         <div style={{marginLeft: '400px'}}>
                                             <Pagination
-                                                count={Math.ceil(order.length / orderPage)}
+                                                count={Math.ceil(orders.length / orderPerPage)}
                                                 page={currentPage}
                                                 onChange={handlePageChange}
                                             />
@@ -151,4 +204,4 @@ const indexOfFirstOrder=indexOfLastOrder-orderPage;
     )
 }
 
-export default Order;
+export default OrdersAdmin;

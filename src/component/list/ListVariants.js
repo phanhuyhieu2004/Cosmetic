@@ -1,30 +1,42 @@
 import {Link, useParams} from "react-router-dom";
+import {Pagination, Tooltip} from "@mui/material";
+import {Delete, Edit, ListAlt, RemoveRedEyeOutlined} from "@mui/icons-material";
 import React, {useEffect, useState} from "react";
 import axios from "axios";
-import {Pagination} from "@mui/material";
 
-function Order() {
+function ListVariants() {
     const user = JSON.parse(localStorage.getItem("user"));
-const [currentPage,setCurrentPage]=useState(1);
-const [orderPage]=useState(10);
-const indexOfLastOrder=currentPage*orderPage;
-const indexOfFirstOrder=indexOfLastOrder-orderPage;
-    const {id}=useParams();
-    const [order, setOrder] = useState([]);
-    const currentOrder=order.slice(indexOfFirstOrder,indexOfLastOrder);
 
-    const handlePageChange=(event,value)=>{
+    const {id,name}=useParams();
+    // trang hiện tại mà người dùng xem
+    const [currentPage, setCurrentPage] = useState(1);
+    // số biến thể  ở mỗi trang
+    const [variantsPerPage] = useState(10);
+    const [variants, setVariants] = useState([]);
+// vị trí cuôối cùng của biến thể = trang hiêện tại nhân với số biến thể ở mỗi trang
+//     10
+    const indexOfLastVariant = currentPage * variantsPerPage;
+    // 0
+    // chỉ số đầu tiên của biến thể trong trang hiện tại bằng chỉ số cuối cùng trừ đi số biến thể mỗi trang
+    const indexOfFirstVariant = indexOfLastVariant - variantsPerPage;
+    // danh sách truyện dđược hiển thị trong trang hiện tại
+    // 0,10
+    const currentVariants = variants.slice(indexOfFirstVariant, indexOfLastVariant);
+
+    const handlePageChange = (event, value) => {
         setCurrentPage(value);
     };
+
+    function fetchVariants() {
+        axios.get(`http://localhost:8080/api/variants/${id}`)
+            .then(response => setVariants(response.data))
+            .catch(error => console.error("Lỗi không lấy được biến thể:", error.message));
+    }
     useEffect(() => {
-        axios.get(`http://localhost:8080/api/orders/items/${id}`)
-            .then(response=>setOrder(response.data))
-            .catch(error => console.error("Lỗi khong lấy được sản phẩm trong đơn hàng",error));
-    }, [id]);
-    console.log("sp là",order);
+        fetchVariants();
+    }, []);
     return(
         <>
-
             <main>
                 <meta name="robots" content="noindex, nofollow"/>
                 <section className="archive__page page-single">
@@ -101,41 +113,52 @@ const indexOfFirstOrder=indexOfLastOrder-orderPage;
                                         ) : ('')
                                         }
                                         </ul>
-                                    </div>                                    <div className="form-content">
+                                    </div>
+                                    <div className="form-content">
                                         <div className="form-title">
-                                            <h1>Thông tin chi tiết về đơn {id} của tài khoản {user.name}</h1>
+                                            <h1>Danh sách biến thể của {name}</h1>
                                         </div>
-                                        <Link to={`/orders`}><button className="btn-add">
-                                           Về danh sách đơn hàng
-                                        </button></Link>
+                                        <Link to={`/create/${id}/${name}`}>
+                                            <button className="btn-add">
+                                                Thêm biến thể
+                                            </button>
+                                        </Link>
                                         <table style={{border: "5px solid black", margin: "50px auto"}}>
                                             <thead>
                                             <tr>
                                                 <th>STT</th>
-                                                <th>Sản phẩm</th>
-                                                <th>Loại</th>
-                                                <th>Số lượng</th>
-                                                <th>Tổng giá</th>
+                                                <th>Ngày tạo</th>
+                                                <th>Tên biến thể</th>
+                                                <th>Tên sản phẩm</th>
+
+                                                <th>Hành động</th>
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            {currentOrder.map((item, index) => (
-                                                <tr key={item.id}>
-                                                    <td>{index + 1}</td>
-                                                    <td>{item.product.name}</td>
-                                                    <td>{item.variant ? item.variant.name : 'Không có'}</td>
-                                                    <td>{item.quantity}</td>
-                                                    <td>{((item.price) * 1000).toLocaleString('vi-VN', {
-                                                        style: 'currency',
-                                                        currency: 'VND'
-                                                    })}</td>
-                                                </tr>
-                                            ))}
+                                            {currentVariants
+                                                .map((item, index) => (
+                                                    <tr key={item.id}>
+                                                        <td>{index + 1}</td>
+                                                        <td>{item.createdAt[2]}-{item.createdAt[1]}-{item.createdAt[0]}</td>
+                                                        <td style={{textTransform: 'capitalize'}}>{item.name}</td>
+
+                                                        <td>{item.products.name}</td>
+                                                        <td>
+
+
+                                                            <Tooltip title="Cập nhật biến thể">
+                                                                <Link to={`/variant/${item.id}/${id}/${name}`}>
+                                                                    <Edit/>
+                                                                </Link>
+                                                            </Tooltip>
+                                                        </td>
+                                                    </tr>
+                                                ))}
                                             </tbody>
                                         </table>
                                         <div style={{marginLeft: '400px'}}>
                                             <Pagination
-                                                count={Math.ceil(order.length / orderPage)}
+                                                count={Math.ceil(variants.length / variantsPerPage)}
                                                 page={currentPage}
                                                 onChange={handlePageChange}
                                             />
@@ -151,4 +174,4 @@ const indexOfFirstOrder=indexOfLastOrder-orderPage;
     )
 }
 
-export default Order;
+export default ListVariants;

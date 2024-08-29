@@ -36,20 +36,21 @@ function Cart() {
         fetchCartId();
     }, [user]);
 
-    useEffect(() => {
-        if (cartId) {
-            // Lấy cart Items từ API
-            const fetchCartItems = async () => {
-                try {
-                    const response = await axios.get(`http://localhost:8080/api/cart/cartItems`, {params: {cartId}});
-                    setCartItems(response.data);
-                } catch (error) {
-                    console.error("Lỗi k lấy được mục giỏ hàng", error);
-                }
-            };
 
-            fetchCartItems();
-        }
+
+        const fetchCartItems = async () => {
+            try {
+                const response = await axios.get(`http://localhost:8080/api/cart/cartItems`, {params: {cartId}});
+                setCartItems(response.data);
+            } catch (error) {
+                console.error("Lỗi k lấy được mục giỏ hàng", error);
+            }
+        };
+
+
+    useEffect(() => {
+        fetchCartItems();
+
     }, [cartId]);
     useEffect(() => {
         const calculateTotalPrice = () => {
@@ -97,14 +98,14 @@ function Cart() {
         // Gửi yêu cầu xóa sản phẩm
         axios.delete(`http://localhost:8080/api/cart/remove/${itemId}`)
             .then(() => {
-                // Cập nhật giỏ hàng sau khi xóa,bỏ đi cái sp vừa bị xóa bằng cách lọc
-                const updatedItems = cartItems.filter(item => item.id !== itemId);
-                setCartItems(updatedItems);
-
-                // Cập nhật tổng tiền ở mảng mới
-                const newTotalPrice = updatedItems.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
-                setTotalPrice(newTotalPrice);
-
+                // // Cập nhật giỏ hàng sau khi xóa,bỏ đi cái sp vừa bị xóa bằng cách lọc
+                // const updatedItems = cartItems.filter(item => item.id !== itemId);
+                // setCartItems(updatedItems);
+                //
+                // // Cập nhật tổng tiền ở mảng mới
+                // const newTotalPrice = updatedItems.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
+                // setTotalPrice(newTotalPrice);
+                fetchCartItems();
                 // Hiển thị thông báo xóa thành công
                 alert("Sản phẩm đã được xóa khỏi giỏ hàng.");
             })
@@ -273,8 +274,10 @@ function Cart() {
                                                 })}</span></p>
                                             </div>
                                             <div className="summary-button">
-                                                <button className="checkout-btn btnred" onClick={handleCheckout}>THANH
-                                                    TOÁN
+                                                <button className={`checkout-btn btnred`}
+                                                        disabled={user && user.role === 0} onClick={handleCheckout}>
+                                                    <span>{user && user.role === 0? "Admin không được mua hàng" : "THANH TOÁN"}</span>
+
                                                 </button>
                                             </div>
                                         </div>
