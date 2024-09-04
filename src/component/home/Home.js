@@ -18,21 +18,20 @@ function Home() {
     const [selectedVariant, setSelectedVariant] = useState(null);
     const [productCountBySubcategory, setProductCountBySubcategory] = useState({});
     const [currenIndex, setCurrenIndex] = useState(0);
+    const [selectedProduct, setSelectedProduct] = useState(null);
+    const user = JSON.parse(localStorage.getItem("user"));
 
-    const handleIncrease = () => {
-        setQuantity(quantity + 1);
-    };
+    const [hasVariants, setHasVariants] = useState(false);
+
+
     const handleVariantClick = (variant) => {
         setSelectedVariant(variant);
     };
 
-    const handleDecrease = () => {
-        setQuantity(quantity > 1 ? quantity - 1 : 1);
-    };
+
 
     const handleThumbnailClick = (index) => setCurrenIndex(index);
 
-    const [selectedProduct, setSelectedProduct] = useState(null);
     const [openSettingModal, setOpenSettingModal] = useState(false);
     const prevSlide = () => {
         setCurrenIndex((prevIndex) => Math.max(prevIndex - 1, 0));
@@ -67,7 +66,7 @@ function Home() {
 // duyệt qua từng sản phẩm,sum là đối tượng chứa số lượng sản phẩm trong từng danh mục con
                 const countBySubcategory = response.data.reduce((sum, product) => {
                     const subcategoryId = product.subcategories.id;
-                    console.log("id danh mục con từ mỗi sp",subcategoryId)
+                    console.log("id danh mục con từ mỗi sp", subcategoryId)
                     //Kiểm tra xem id danh mục con đã có ở trong sum chưa,nếu chưa có thì thêm id đó vào với GTKT là 0
                     if (!sum[subcategoryId]) {
                         sum[subcategoryId] = 0;
@@ -81,7 +80,7 @@ function Home() {
             })
             .catch(error => console.error('Lỗi không lấy được sản phẩm:', error));
     }, []);
-console.log("số lượng sp trong từng dm là ",productCountBySubcategory)
+    console.log("số lượng sp trong từng dm là ", productCountBySubcategory)
     useEffect(() => {
         axios.get('http://localhost:8080/api/images')
             .then(response => setImages(response.data))
@@ -90,9 +89,19 @@ console.log("số lượng sp trong từng dm là ",productCountBySubcategory)
 
     useEffect(() => {
         axios.get('http://localhost:8080/api/variants')
-            .then(response => setVariants(response.data))
+            .then(response => {
+                const variantsData = response.data;
+                setVariants(variantsData);
+                // Kiểm tra xem có ít nhất một biến thể trong variantsData mà thuộc tính products.id của nó khớp với product.id không.
+                const productHasVariants = variantsData.some(variant => variant.products.id === selectedProduct.id);
+                setHasVariants(productHasVariants);
+
+            })
+
             .catch(error => console.error('Lỗi không lấy được biến thể:', error));
-    }, []);
+    }, [products,selectedProduct]);
+    console.log("objla",selectedProduct);
+    console.log("Cos bt k",hasVariants);
 
     useEffect(() => {
         axios.get('http://localhost:8080/api/subcategories')
@@ -133,8 +142,44 @@ console.log("số lượng sp trong từng dm là ",productCountBySubcategory)
         autoplay: true,
         autoplaySpeed: 1000,
     };
-    console.log("GTMD",selectedSubcategories);
-console.log("DMC",subCategories);
+
+    console.log("GTMD", selectedSubcategories);
+    console.log("DMC", subCategories);
+    const handleIncrease = () => setQuantity((prevQuantity) => Math.min(prevQuantity + 1, selectedProduct.quantity));
+    const handleDecrease = () => setQuantity((prevQuantity) => Math.max(prevQuantity - 1, 1));
+    const addToCart = async () => {
+        if (!user || !user.id) {
+            alert("Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng.");
+            return;
+        }
+        if (hasVariants && !selectedVariant) {
+            alert("Vui lòng chọn một biến thể.");
+            return;
+        }
+
+        if (selectedProduct.quantity <= 0) {
+            alert("Sản phẩm đã hết hàng.");
+            return;
+        }
+
+        const variantId = hasVariants ? selectedVariant?.id : null;
+        console.log("các biến thể la la ",variantId);
+        try {
+            await axios.post('http://localhost:8080/api/cart/add', null, {
+                params: {
+                    accountId: user.id,
+                    productId: selectedProduct.id,
+                    variantId: variantId,
+                    quantity: quantity
+                }
+            });
+            alert("Sản phẩm đã được thêm vào giỏ hàng");
+        } catch (error) {
+            console.error("Bạn cần đăng nhập để thêm sp vào giỏ hàng", error);
+            alert("Đã xảy ra lỗi khi thêm sản phẩm vào giỏ hàng.");
+        }
+    };
+
     return (
         <main className="main-content">
             <div className="slider-container">
@@ -181,7 +226,7 @@ console.log("DMC",subCategories);
                                                     }}
                                                 >
                                                     {/*lấy được số lượng sản phẩm thông qua việc truy cập vào đối tượng productCountBySubcategory từ key*/}
-                                                    {subcategory.name} ({productCountBySubcategory[subcategory.id] || 0})                                                </a>
+                                                    {subcategory.name} ({productCountBySubcategory[subcategory.id] || 0}) </a>
                                             </li>
                                         ))}
                                 </ul>
@@ -193,7 +238,7 @@ console.log("DMC",subCategories);
                                 <div className="list product-list-1">
                                     {products
                                         .filter(product =>
-                                            product.subcategories.id === selectedSubcategories[category.id]
+                                                product.subcategories.id === selectedSubcategories[category.id]
                                             // Lọc sản phẩm theo mục con đã chọn,có thể nói đây là so sánh xem id của danh mục con đã chọn có bằng id của danh mục con trong sản phẩm hay không?nếu có thì lấy ra sản phẩm thuộc danh mục con đó
                                         )
                                         .slice(0, 18)
@@ -311,45 +356,55 @@ console.log("DMC",subCategories);
                                                                                 <span
                                                                                     className="price-real">{selectedProduct.price},000₫</span>
                                                                             </div>
-                                                                            <div className="product--variants">
-                                                                                <form>
-                                                                                    <div className="select-swatch clearfix">
+                                                                            {hasVariants ? (
+                                                                                <div className="product--variants">
+                                                                                    <form>
                                                                                         <div
-                                                                                            className="swatch clearfix">
-                                                                                            <div className="title-swap header">
-                                                                                                <p>Màu sắc :</p>
-                                                                                                <strong>{selectedVariant ? selectedVariant.name : 'Chọn màu'}</strong>
-                                                                                            </div>
+                                                                                            className="select-swatch clearfix">
                                                                                             <div
-                                                                                                className="select-swap">
-                                                                                                {variants
-                                                                                                    .filter(variant => variant.products.id === selectedProduct.id)
-                                                                                                    .map(variant => (
-                                                                                                        <div
-                                                                                                            className={`swatch-element `}
-                                                                                                            key={variant.id}
-                                                                                                            onClick={() => handleVariantClick(variant)}
-                                                                                                        >
-                                                                                                            <label
-                                                                                                                className={`variant ${selectedVariant?.id === variant.id ? 'sd' : ''}`}>
-                                                                                                                <span>{variant.name}</span>
-                                                                                                            </label>
-                                                                                                        </div>
-                                                                                                    ))}
+                                                                                                className="swatch clearfix">
+                                                                                                <div
+                                                                                                    className="title-swap header">
+                                                                                                    <p>Màu sắc :</p>
+                                                                                                    <strong>{selectedVariant ? selectedVariant.name : 'Chọn màu'}</strong>
+                                                                                                </div>
+                                                                                                <div
+                                                                                                    className="select-swap">
+                                                                                                    {variants
+                                                                                                        .filter(variant => variant.products.id === selectedProduct.id)
+                                                                                                        .map(variant => (
+                                                                                                            <div
+                                                                                                                className={`swatch-element `}
+                                                                                                                key={variant.id}
+                                                                                                                onClick={() => handleVariantClick(variant)}
+                                                                                                            >
+                                                                                                                <label
+                                                                                                                    className={`variant ${selectedVariant?.id === variant.id ? 'sd' : ''}`}>
+                                                                                                                    <span>{variant.name}</span>
+                                                                                                                </label>
+                                                                                                            </div>
+                                                                                                        ))}
+                                                                                                </div>
                                                                                             </div>
                                                                                         </div>
-                                                                                    </div>
-                                                                                </form>
-                                                                            </div>
-
+                                                                                    </form>
+                                                                                </div>
+                                                                            ) : (<div className="no-variants">
+                                                                                    <p>Sản phẩm này không có loại
+                                                                                        nào.</p>
+                                                                                </div>
+                                                                            )}
                                                                             <div className="quantity-area">
                                                                                 <div className="quantity-title">
-                                                                                    Số lượng :
+                                                                                    Số lượng : Đang
+                                                                                    có {selectedProduct.quantity} sản phẩm trong
+                                                                                    kho
                                                                                 </div>
                                                                                 <div className="box-quantity">
                                                                                     <button type="button"
                                                                                             className="btn-quantity"
-                                                                                            onClick={handleDecrease}>
+                                                                                            onClick={handleDecrease}
+                                                                                            disabled={quantity <= 1}>
                                                                                         <svg focusable="false"
                                                                                              className="icon icon--minus"
                                                                                              viewBox="0 0 10 2"
@@ -361,22 +416,26 @@ console.log("DMC",subCategories);
                                                                                     <input type="text"
                                                                                            className="quantity-input"
                                                                                            value={quantity} min={1}
+                                                                                           max={selectedProduct.quantity}
                                                                                            readOnly/>
                                                                                     <button type="button"
                                                                                             className="btn-quantity"
+                                                                                            disabled={quantity >= selectedProduct.quantity}
                                                                                             onClick={handleIncrease}>
                                                                                         <svg focusable="false"
                                                                                              className="icon icon--plus"
                                                                                              viewBox="0 0 10 10"
                                                                                              role="presentation">
-                                                                                            <path d="M5 0v10M0 5h10"
-                                                                                                  stroke="currentColor"></path>
+                                                                                            <path d="M6 4h4v2H6v4H4V6H0V4h4V0h2v4z"></path>
                                                                                         </svg>
                                                                                     </button>
                                                                                 </div>
                                                                                 <div className="addCart-area">
-                                                                                    <button className="btn-addtocart">
-                                                                                        <span>THÊM VÀO GIỎ</span>
+                                                                                    <button
+                                                                                        className={`btn-addtocart ${selectedProduct?.quantity <= 0 ? "disable" : "enable"}`}
+                                                                                        onClick={addToCart}
+                                                                                        disabled={selectedProduct?.quantity <= 0}>
+                                                                                        <span>{selectedProduct?.quantity > 0 ? "THÊM VÀO GIỎ" : "HẾT HÀNG"}</span>
                                                                                     </button>
                                                                                 </div>
                                                                             </div>

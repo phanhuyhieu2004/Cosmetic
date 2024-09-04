@@ -46,6 +46,7 @@ button{
 
 }
 .form-button{
+    width: 400px;
     margin: 20px auto;
 }
 select{

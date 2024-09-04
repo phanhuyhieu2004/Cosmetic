@@ -6,10 +6,15 @@ import { XYPlot, VerticalBarSeries, XAxis, YAxis } from 'react-vis';
 function Statistical() {
     const [totalSold, setTotalSold] = useState(0);
     const [chartData, setChartData] = useState([]);
-    const [revenue, setRevenue] = useState(null);
+    const [revenue, setRevenue] = useState('');
+    const [countAccount,setCountAccount]=useState('')
     const [date, setDate] = useState('');
     const [month, setMonth] = useState('');
     const [year, setYear] = useState('');
+    const [dateAccount, setDateAccount] = useState('');
+    const [monthAccount, setMonthAccount] = useState('');
+    const [yearAccount, setYearAccount] = useState('');
+    const [bestSeller,setBestSeller]=useState([])
     const user = JSON.parse(localStorage.getItem("user"));
 
     useEffect(() => {
@@ -36,7 +41,16 @@ function Statistical() {
             })
             .catch(error => console.error('Lỗi khi lấy dữ liệu:', error));
     }, []);
-console.log('dữ liệu',chartData);
+    useEffect(() => {
+        axios.get('http://localhost:8080/api/orders/items/top-selling-products')
+            .then(response => {
+              setBestSeller(              response.data
+            );
+            })
+            .catch(error => console.error('Lỗi khi lấy dữ liệu:', error));
+    }, []);
+
+console.log('dữ liệu',bestSeller);
     const handleFetchRevenue = async () => {
         let url = '';
         if (date) {
@@ -49,9 +63,39 @@ console.log('dữ liệu',chartData);
 
         if (url) {
             const response = await axios.get(url);
+            console.log("Ngày",response.data);
             setRevenue(response.data);
+
         }
     };
+    const handleFetchCount = async () => {
+        let url = '';
+        if (dateAccount) {
+            url = `http://localhost:8080/api/account/daily?date=${dateAccount}`;
+        } else if (monthAccount && yearAccount) {
+            url = `http://localhost:8080/api/account/monthly?month=${monthAccount}&year=${yearAccount}`;
+        } else if (year) {
+            url = `http://localhost:8080/api/account/yearly?year=${yearAccount}`;
+        }
+
+        if (url) {
+            const response = await axios.get(url);
+            console.log("Số luong",response.data);
+            setCountAccount(response.data);
+
+        }
+    };
+    console.log("Doanh thu",revenue);
+
+const dataProductTopSeller = (bestSeller) => {
+    return bestSeller.map(item => ({
+        id: item[0],
+        name: item[1].trim(),
+        totalSold: item[2]
+    }));
+
+}
+const productTopSeller=dataProductTopSeller(bestSeller);
 
     return (
         <>
@@ -146,57 +190,119 @@ console.log('dữ liệu',chartData);
                                     </div>
                                     <div className="form-content">
                                         <div className="form-title">
-                                            <h1>Tổng số sản phẩm bán ra: {totalSold}</h1>
+                                            <h1>Tổng số sản phẩm bán ra: {totalSold? totalSold:'Không có sản phẩm nào được bán cả'}</h1>
                                         </div>
-                                        <div className="form-title">
-                                            <h1>Báo cáo doanh thu</h1>
-                                        </div>
-                                        <div className="form-time">
-                                            <div className={"form-date"}>
-                                                <label>Chọn ngày:</label>
-                                                <input type="date" value={date}
-                                                       onChange={(e) => setDate(e.target.value)}/>
-                                            </div>
-                                            <div className={"form-date"}>
-                                                <label>Chọn tháng:</label>
-                                                <input type="month" value={month}
-                                                       onChange={(e) => setMonth(e.target.value)}/>
-                                            </div>
-                                            <div className={"form-date"}>
-                                                <label>Chọn năm:</label>
-                                                <input type="number" value={year}
-                                                       onChange={(e) => setYear(e.target.value)}
-                                                       placeholder="YYYY"/>
+                                        <div>
+                                            <div className="form-title">
+                                                <h1>Tổng doanh thu theo thời gian:</h1>
                                             </div>
 
-                                        </div>
-                                        <div className={"form-button"}>
-                                            <button onClick={handleFetchRevenue}>Lấy doanh thu</button>
-
-                                            {revenue && (
-                                                <div>
-                                                    <h4 className={'title-revenue'}>Doanh
-                                                        thu: {revenue.totalRevenue ? ((revenue.totalRevenue) * 1000).toLocaleString('vi-VN', {
-                                                            style: 'currency',
-                                                            currency: 'VND'
-                                                        }) : 'Không có'}</h4>
+                                            <div className="form-time">
+                                                <div className={"form-date"}>
+                                                    <label>Chọn ngày:</label>
+                                                    <input type="date" value={date}
+                                                           onChange={(e) => setDate(e.target.value)}/>
                                                 </div>
-                                            )}
-                                        </div>
+                                                <div className={"form-date"}>
+                                                    <label>Chọn tháng:</label>
+                                                    <input type="month" value={month}
+                                                           onChange={(e) => setMonth(e.target.value)}/>
+                                                </div>
+                                                <div className={"form-date"}>
+                                                    <label>Chọn năm:</label>
+                                                    <input type="number" value={year}
+                                                           onChange={(e) => setYear(e.target.value)}
+                                                           placeholder="YYYY"/>
+                                                </div>
 
-                                        <div className="form-title">
-                                            <h1>Tổng số đơn hàng theo từng trạng thái thanh toán</h1>
+                                            </div>
+                                            <div className={"form-button"}>
+                                                <button onClick={handleFetchRevenue}>Lấy doanh thu</button>
+
+                                                {revenue && (
+                                                    <div>
+                                                        <h4 className={'title-revenue'}>Doanh
+                                                            thu: {revenue.totalRevenue ? ((revenue.totalRevenue) * 1000).toLocaleString('vi-VN', {
+                                                                style: 'currency',
+                                                                currency: 'VND'
+                                                            }) : 'Không có'}</h4>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div> <div>
+                                            <div className="form-title">
+                                                <h1>Tổng tài khoản mới đăng ký theo thời gian:</h1>
+                                            </div>
+
+                                            <div className="form-time">
+                                                <div className={"form-date"}>
+                                                    <label>Chọn ngày:</label>
+                                                    <input type="date" value={dateAccount}
+                                                           onChange={(e) => setDateAccount(e.target.value)}/>
+                                                </div>
+                                                <div className={"form-date"}>
+                                                    <label>Chọn tháng:</label>
+                                                    <input type="month" value={monthAccount}
+                                                           onChange={(e) => setMonthAccount(e.target.value)}/>
+                                                </div>
+                                                <div className={"form-date"}>
+                                                    <label>Chọn năm:</label>
+                                                    <input type="number" value={yearAccount}
+                                                           onChange={(e) => setYearAccount(e.target.value)}
+                                                           placeholder="YYYY"/>
+                                                </div>
+
+                                            </div>
+                                            <div className={"form-button"}>
+                                                <button onClick={handleFetchCount}>Lấy doanh thu</button>
+
+                                                {countAccount && (
+                                                    <div>
+                                                        <h4 className={'title-revenue'}>Số lượng : {countAccount.count ? countAccount.count
+                                                           : 'Không có'}</h4>
+                                                    </div>
+                                                )}
+                                            </div>
                                         </div>
-                                        <div style={{height: 400}}>
-                                            <XYPlot height={300} width={600} xType="ordinal"
-                                                    margin={{left: 50, right: 20, top: 50, bottom: 50}}>
-                                                <VerticalBarSeries
-                                                    data={chartData.map(item => ({x: item.status, y: item.count}))}
-                                                    color="deeppink" barWidth={0.5}
-                                                />
-                                                <YAxis title="Số lượng"/>
-                                                <XAxis position="middle"/>
-                                            </XYPlot>
+                                        <div>
+                                            <div className="form-title">
+                                                <h1>Tổng số đơn hàng theo từng trạng thái thanh toán:</h1>
+                                            </div>
+                                            <div style={{height: 400}}>
+                                                <XYPlot height={300} width={600} xType="ordinal"
+                                                        margin={{left: 50, right: 20, top: 50, bottom: 50}}>
+                                                    <VerticalBarSeries
+                                                        data={chartData.map(item => ({x: item.status, y: item.count}))}
+                                                        color="deeppink" barWidth={0.5}
+                                                    />
+                                                    <YAxis title="Số lượng"/>
+                                                    <XAxis position="middle"/>
+                                                </XYPlot>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div className="form-title">
+                                                <h1>3 Sản phẩm bán chạy nhất:</h1>
+                                            </div>
+                                            <table style={{border: "5px solid black", margin: "50px auto"}}>
+                                                <thead>
+                                                <tr>
+                                                    <th>STT</th>
+                                                    <th>Tên sản phẩm</th>
+                                                    <th>Số lượt bán</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                {productTopSeller.map((item,index)=>(
+                                                    <tr key={index}>
+                                                        <td>{index+1}</td>
+                                                        <td>{item.name}</td>
+                                                        <td>{item.totalSold}</td>
+                                                    </tr>
+                                                ))}
+                                                </tbody>
+                                            </table>
+
                                         </div>
                                     </div>
                                 </div>

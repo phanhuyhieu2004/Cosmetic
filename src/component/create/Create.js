@@ -94,10 +94,7 @@ function Create() {
             alert("Tên sản phẩm có kí tự đặc biệt, mời nhập lại!")
             return;
         }
-        if (checkSpecial(brand)) {
-            alert("Tên nhãn hàng có kí tự đặc biệt, mời nhập lại!")
-            return;
-        }
+
 
 
         const formData = {
@@ -107,7 +104,10 @@ function Create() {
             quantity,
             description,
             subcategoryId: selectedCategory,
-            images: files
+            images: files.map(file => ({
+                name: file,
+
+            }))
         };
 
         axios.post('http://localhost:8080/api/products', formData)
