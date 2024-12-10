@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { XYPlot, VerticalBarSeries, XAxis, YAxis } from 'react-vis';
+import Dashboard from "../dashboard/Dashboard";
 
 function Statistical() {
     const [totalSold, setTotalSold] = useState(0);
@@ -63,7 +64,7 @@ console.log('dữ liệu',bestSeller);
 
         if (url) {
             const response = await axios.get(url);
-            console.log("Ngày",response.data);
+
             setRevenue(response.data);
 
         }
@@ -74,7 +75,7 @@ console.log('dữ liệu',bestSeller);
             url = `http://localhost:8080/api/account/daily?date=${dateAccount}`;
         } else if (monthAccount && yearAccount) {
             url = `http://localhost:8080/api/account/monthly?month=${monthAccount}&year=${yearAccount}`;
-        } else if (year) {
+        } else if (yearAccount) {
             url = `http://localhost:8080/api/account/yearly?year=${yearAccount}`;
         }
 
@@ -85,7 +86,6 @@ console.log('dữ liệu',bestSeller);
 
         }
     };
-    console.log("Doanh thu",revenue);
 
 const dataProductTopSeller = (bestSeller) => {
     return bestSeller.map(item => ({
@@ -118,76 +118,7 @@ const productTopSeller=dataProductTopSeller(bestSeller);
                         <main className="archive__content" role="main">
                             <div className="form">
                                 <div className="wrapper">
-                                    <div className="form-bar">
-                                        <div className="clearfix">
-                                            <img
-                                                src="https://static-00.iconduck.com/assets.00/cs-cat-admin-icon-512x512-3l4exe6y.png"
-                                                className="avatar" alt="không thể xem ảnh"/>
-                                            <div className="info-text">
-                                                <div className="fullname">
-                                                    <span>{user.name}</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <ul className="action">
-                                            <li>
-                                                <Link to="/home">
-                                                    <i className="fa fa-book-open-reader"></i>Trang chủ
-                                                </Link>
-                                            </li>
-                                            {user && user.role === 0 ? (
-
-                                                <li>
-                                                    <Link to="/list">
-                                                        <i className="fa fa-bars"/> Danh sách sản phẩm
-                                                    </Link>
-                                                </li>) : ('')
-                                            }
-                                            {user && user.role === 0 ? (
-
-                                                <li>
-                                                    <Link to="/create">
-                                                        <i className="fa fa-plus"></i> Thêm sản phẩm
-                                                    </Link>
-                                                </li>
-                                            ) : ('')
-                                            }
-                                            {user && user.role === 0 ? (
-
-                                                <li>
-                                                    <Link to="/statistical">
-                                                        <i className=" fa fa-chart-simple"></i> Thống kê
-                                                    </Link>
-                                                </li>
-                                            ) : ('')
-                                            } {user && user.role === 0 ? (
-
-                                            <li>
-                                                <Link to="/orders/admin">
-                                                    <i className="fa fa-list"></i> Quản lý đơn hàng
-                                                </Link>
-                                            </li>
-                                        ) : ('')
-                                        }
-                                            {user && user.role === 1 ? (
-
-                                                <li>
-                                                    <Link to="/orders">
-                                                        <i className="fa fa-list"></i> Quản lý đơn hàng
-                                                    </Link>
-                                                </li>
-                                            ) : ('')
-                                            } {user && user.role === 1 ? (
-
-                                            <li>
-                                                <Link to="/cart">
-                                                    <i className="fas fa-shopping-cart"/> Giỏ hàng
-                                                </Link>
-                                            </li>
-                                        ) : ('')
-                                        }
-                                        </ul>
-                                    </div>
+                                    <Dashboard></Dashboard>
                                     <div className="form-content">
                                         <div className="form-title">
                                             <h1>Tổng số sản phẩm bán ra: {totalSold? totalSold:'Không có sản phẩm nào được bán cả'}</h1>
@@ -200,17 +131,17 @@ const productTopSeller=dataProductTopSeller(bestSeller);
                                             <div className="form-time">
                                                 <div className={"form-date"}>
                                                     <label>Chọn ngày:</label>
-                                                    <input type="date" value={date}
+                                                    <input type="date" value={date} className={"search-date"}
                                                            onChange={(e) => setDate(e.target.value)}/>
                                                 </div>
                                                 <div className={"form-date"}>
                                                     <label>Chọn tháng:</label>
-                                                    <input type="month" value={month}
+                                                    <input type="month" value={month} className={"search-date"}
                                                            onChange={(e) => setMonth(e.target.value)}/>
                                                 </div>
                                                 <div className={"form-date"}>
                                                     <label>Chọn năm:</label>
-                                                    <input type="number" value={year}
+                                                    <input type="number" value={year} className={"search-date"}
                                                            onChange={(e) => setYear(e.target.value)}
                                                            placeholder="YYYY"/>
                                                 </div>
@@ -237,24 +168,24 @@ const productTopSeller=dataProductTopSeller(bestSeller);
                                             <div className="form-time">
                                                 <div className={"form-date"}>
                                                     <label>Chọn ngày:</label>
-                                                    <input type="date" value={dateAccount}
+                                                    <input type="date" value={dateAccount} className={"search-date"}
                                                            onChange={(e) => setDateAccount(e.target.value)}/>
                                                 </div>
                                                 <div className={"form-date"}>
                                                     <label>Chọn tháng:</label>
-                                                    <input type="month" value={monthAccount}
+                                                    <input type="month" value={monthAccount} className={"search-date"}
                                                            onChange={(e) => setMonthAccount(e.target.value)}/>
                                                 </div>
                                                 <div className={"form-date"}>
                                                     <label>Chọn năm:</label>
-                                                    <input type="number" value={yearAccount}
+                                                    <input type="number" value={yearAccount} className={"search-date"}
                                                            onChange={(e) => setYearAccount(e.target.value)}
                                                            placeholder="YYYY"/>
                                                 </div>
 
                                             </div>
                                             <div className={"form-button"}>
-                                                <button onClick={handleFetchCount}>Lấy doanh thu</button>
+                                                <button onClick={handleFetchCount}>Lấy số lượng</button>
 
                                                 {countAccount && (
                                                     <div>
@@ -268,20 +199,27 @@ const productTopSeller=dataProductTopSeller(bestSeller);
                                             <div className="form-title">
                                                 <h1>Tổng số đơn hàng theo từng trạng thái thanh toán:</h1>
                                             </div>
-                                            <div style={{height: 400}}>
-                                                <XYPlot height={300} width={600} xType="ordinal"
-                                                        margin={{left: 50, right: 20, top: 50, bottom: 50}}>
-                                                    <VerticalBarSeries
-                                                        data={chartData.map(item => ({x: item.status, y: item.count}))}
-                                                        color="deeppink" barWidth={0.5}
-                                                    />
-                                                    <YAxis title="Số lượng"/>
-                                                    <XAxis position="middle"/>
-                                                </XYPlot>
-                                            </div>
+                                            <table style={{border: "5px solid black", margin: "50px auto"}}>
+                                                <thead>
+                                                <tr>
+                                                    <th>Trạng thái đơn</th>
+                                                    <th>Số lượng</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                {chartData.map((item, index) => (
+                                                    <tr key={index}>
+
+                                                        <td>{item.status}</td>
+                                                        <td>{item.count}</td>
+                                                    </tr>
+                                                ))}
+                                                </tbody>
+                                            </table>
+
                                         </div>
                                         <div>
-                                            <div className="form-title">
+                                        <div className="form-title">
                                                 <h1>3 Sản phẩm bán chạy nhất:</h1>
                                             </div>
                                             <table style={{border: "5px solid black", margin: "50px auto"}}>
@@ -293,9 +231,9 @@ const productTopSeller=dataProductTopSeller(bestSeller);
                                                 </tr>
                                                 </thead>
                                                 <tbody>
-                                                {productTopSeller.map((item,index)=>(
+                                                {productTopSeller.map((item, index) => (
                                                     <tr key={index}>
-                                                        <td>{index+1}</td>
+                                                        <td>{index + 1}</td>
                                                         <td>{item.name}</td>
                                                         <td>{item.totalSold}</td>
                                                     </tr>

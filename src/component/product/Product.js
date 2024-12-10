@@ -3,8 +3,11 @@ import React, {useEffect, useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
 import axios from "axios";
 import ReactQuill from "react-quill";
+import {useCart} from "../../CartProvider";
 
 function Product() {
+    const { setCartItems, fetchCartItems } = useCart();
+
     const {id} = useParams();
     const [quantity, setQuantity] = useState(1);
     const [product, setProduct] = useState(null);
@@ -56,6 +59,9 @@ console.log("các biến thể la la ",variantId);
                 }
             });
             alert("Sản phẩm đã được thêm vào giỏ hàng");
+            fetchCartItems();
+            window.location.reload();
+
         } catch (error) {
             console.error("Bạn cần đăng nhập để thêm sp vào giỏ hàng", error);
             alert("Đã xảy ra lỗi khi thêm sản phẩm vào giỏ hàng.");
@@ -88,7 +94,9 @@ console.log("các biến thể la la ",variantId);
                 }
                 // params: Đây là một đối tượng chứa các cặp key-value, mà khi được truyền vào yêu cầu, sẽ tự động được chuyển đổi thành chuỗi query và gắn vào cuối URL.
             });
+            fetchCartItems();
             alert("Sản phẩm đã được thêm vào giỏ hàng");
+
             navigate("/cart");
         } catch (error) {
             console.error("Bạn cần đăng nhập để mua sp :", error);
@@ -266,15 +274,15 @@ console.log("các biến thể la la ",variantId);
                                             <button
                                                 className={`btn-addtocart ${product?.quantity <= 0 ? "disable" : "enable"}`}
                                                 onClick={addToCart}
-                                                disabled={product?.quantity <= 0}>
-                                                <span>{product?.quantity > 0 ? "THÊM VÀO GIỎ" : "HẾT HÀNG"}</span>
+                                                disabled={product?.quantity <= 1}>
+                                                <span>{product?.quantity > 1 ? "THÊM VÀO GIỎ" : "HẾT HÀNG"}</span>
                                             </button>
                                         </div>
                                     </div>
                                     <div className="addCart-area">
-                                        <button className={`buy-now ${product?.quantity <= 0 ? "disable" : "enable"}`}
+                                        <button className={`buy-now ${product?.quantity <= 1 ? "disable" : "enable"}`}
                                                 onClick={buyNow}>
-                                            <span>{product?.quantity > 0 ? "MUA NGAY" : "HẾT HÀNG"}</span>
+                                            <span>{product?.quantity > 1 ? "MUA NGAY" : "HẾT HÀNG"}</span>
                                         </button>
                                     </div>
                                 </div>

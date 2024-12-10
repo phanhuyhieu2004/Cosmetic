@@ -51,40 +51,36 @@ function Register() {
 
     return (
         <>
-            <main className="main-content">
-                <div className="container login-container">
-                    <form className="form-login" onSubmit={handleSubmit}>
-                        <h1 className="form-heading">Đăng ký</h1>
-                        <div className="form-group">
-                            <i className="far fa-user"></i>
-                            <input
-                                type="text"
-                                className="form-input"
-                                placeholder="Tên đăng nhập"
-                                value={username}
-                                onChange={(e) => setUsername(e.target.value)}
-                            />
+            <div className={"main-body"}>
+                <div className="wrappers">
+                    <form action="#" onSubmit={handleSubmit}>
+                        <h2>Đăng ký</h2>
+                        <div className="input-field">
+                            <input type="text" value={username}
+                                   onChange={(e) => setUsername(e.target.value)} required/>
+                            <label>Nhập tên đăng nhập</label>
                         </div>
-                        <div className="form-group">
-                            <i className="fas fa-key"></i>
-                            <input
-                                type={statusEyes ? "text" : "password"}
-                                className="form-input"
-                                placeholder="Mật khẩu"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                            />
-                            <div className="eye" onClick={handleClick}>
-                                <i className={statusEyes ? "fa-solid fa-eye" : "fa-solid fa-eye-slash"}></i>
-                            </div>
+                        <div className="input-field">
+                            <input type="password" value={password}
+                                   onChange={(e) => setPassword(e.target.value)} required/>
+                            <label>Nhập mật khẩu</label>
                         </div>
-                        <div className="form-link">
-                            <a href="/login">Đã có tài khoản ? <span>Đăng nhập</span></a>
+                        <div className="forget">
+                            <label htmlFor="remember">
+                                <input type="checkbox" id="remember"/>
+                                <p>Ghi nhớ mật khẩu</p>
+                            </label>
+                            <a href="#">Quên mật khẩu?</a>
                         </div>
-                        <input type="submit" className="form-submit" value="Đăng ký"/>
+                        <button type="submit">Đăng ký</button>
+                        <div className="register">
+                            <p>Nếu đã có tài khoản? <a href="/login">Đăng nhập</a></p>
+                        </div>
                     </form>
                 </div>
-            </main>
+
+            </div>
+
         </>
     );
 }

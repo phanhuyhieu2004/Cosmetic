@@ -4,6 +4,7 @@ import ReactQuill from "react-quill";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import striptags from "striptags";
+import Dashboard from "../dashboard/Dashboard";
 function Update() {
     const user = JSON.parse(localStorage.getItem("user"));
 
@@ -93,10 +94,6 @@ console.log("id ảnh",imageIds)
         };
     };
 
-    function checkSpecial(str) {
-        const specialChars = /[!@#$%^&*(),.?":{}|<>]/g;
-        return specialChars.test(str);
-    }
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -106,19 +103,7 @@ console.log("id ảnh",imageIds)
             alert("Vui lòng chọn ảnh cho tất cả các vị trí.");
             return;
         }
-        if (checkSpecial(productName)) {
-            alert("Tên sản phẩm có kí tự đặc biệt, mời nhập lại!");
-            return;
-        }
-        if (checkSpecial(brand)) {
-            alert("Tên nhãn hàng có kí tự đặc biệt, mời nhập lại!");
-            return;
-        }
-        const descriptionContent = striptags(description);
-        if (checkSpecial(descriptionContent)) {
-            alert("Mô tả sản phẩm có ký tự đặc biệt, mời nhập lại !!!");
-            return;
-        }
+
 
         const formData = {
             name: productName,
@@ -158,84 +143,27 @@ console.log("id ảnh",imageIds)
     return (
         <>
             <main>
-                <meta name="robots" content="noindex, nofollow" />
+                <div className="breadcrumb-shop">
+                    <div className="container container-pd1">
+                        <div className="breadcrumb-list">
+                            <ol className="breadcrumb breadcrumb-arrows">
+                                <li><a href="/home"><span>Trang chủ</span></a></li>
+                                <li><a href="/list"><span>Quản lý sản phẩm</span></a></li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+
+                <meta name="robots" content="noindex, nofollow"/>
                 <section className="archive__page page-single">
                     <div className="container">
                         <main className="archive__content" role="main">
                             <div className="form">
                                 <div className="wrapper">
-                                    <div className="form-bar">
-                                        <div className="clearfix">
-                                            <img
-                                                src="https://static-00.iconduck.com/assets.00/cs-cat-admin-icon-512x512-3l4exe6y.png"
-                                                className="avatar" alt="không thể xem ảnh"/>
-                                            <div className="info-text">
-                                                <div className="fullname">
-                                                    <span>{user.name}</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <ul className="action">
-                                            <li>
-                                                <Link to="/home">
-                                                    <i className="fa fa-book-open-reader"></i>Trang chủ
-                                                </Link>
-                                            </li>
-                                            {user && user.role === 0 ? (
-
-                                                <li>
-                                                    <Link to="/list">
-                                                        <i className="fa fa-bars"/> Danh sách sản phẩm
-                                                    </Link>
-                                                </li>) : ('')
-                                            }
-                                            {user && user.role === 0 ? (
-
-                                                <li>
-                                                    <Link to="/create">
-                                                        <i className="fa fa-plus"></i> Thêm sản phẩm
-                                                    </Link>
-                                                </li>
-                                            ) : ('')
-                                            }
-                                            {user && user.role === 0 ? (
-
-                                                <li>
-                                                    <Link to="/statistical">
-                                                        <i className=" fa fa-chart-simple"></i> Thống kê
-                                                    </Link>
-                                                </li>
-                                            ) : ('')
-                                            } {user && user.role === 0 ? (
-
-                                            <li>
-                                                <Link to="/orders/admin">
-                                                    <i className="fa fa-list"></i> Quản lý đơn hàng
-                                                </Link>
-                                            </li>
-                                        ) : ('')
-                                        }
-                                            {user && user.role === 1 ? (
-
-                                                <li>
-                                                    <Link to="/orders">
-                                                        <i className="fa fa-list"></i> Quản lý đơn hàng
-                                                    </Link>
-                                                </li>
-                                            ) : ('')
-                                            } {user && user.role === 1 ? (
-
-                                            <li>
-                                                <Link to="/cart">
-                                                    <i className="fas fa-shopping-cart"/> Giỏ hàng
-                                                </Link>
-                                            </li>
-                                        ) : ('')
-                                        }
-                                        </ul>
-                                    </div>                                    <div className="form-content">
+                                    <Dashboard></Dashboard>
+                                    <div className="form-content">
                                         <div className="form-title">
-                                            <h1>Thêm sản phẩm</h1>
+                                            <h1>Cập nhật sản phẩm</h1>
                                         </div>
                                         <form onSubmit={handleSubmit}>
                                             <div className="form-profile">
@@ -385,7 +313,7 @@ console.log("id ảnh",imageIds)
                                                     <div className="col-2">
                                                         <div className="action">
                                                             <button className="btn-form">
-                                                                Thêm sản phẩm
+                                                                Cập nhật sản phẩm
                                                             </button>
                                                         </div>
                                                     </div>

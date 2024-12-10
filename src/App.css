@@ -1,10 +1,16 @@
 @charset "UTF-8";
 :root {
+
   --shop-color-bg: #ffffff;
-  --shop-color-main: #f7adba;
+  --shop-color-main:
+radial-gradient(circle at 0.1% 53.8%, rgb(255, 182, 172) 0%, rgb(255, 123, 172) 100.2%);
+;
   --shop-color-text: #252a2b;
   --shop-color-title: #333333;
-  --shop-color-hover: #f7adba;
+  --shop-color-hover:
+
+ radial-gradient(circle at 5.3% 17.2%, rgb(255, 208, 253) 0%, rgb(255, 237, 216) 90%);
+;
   --shop-color-button: #f7adba;
   --shop-color-border: #eae4e8;
   --home-category-bg-1: #faf1ff;
@@ -47,6 +53,9 @@ table, caption, tbody, tfoot, thead, tr, th, td {
   font-size: 100%;
   vertical-align: baseline;
   background: transparent;
+}
+html {
+  font-size: 62.5%;
 }
 
 body {
@@ -108,7 +117,7 @@ img {
 body {
   color: var(--shop-color-text);
   line-height: 1.45;
-  font-size: 14px;
+  font-size: 1.4rem;
   background: var(--shop-color-bg);
   font-family: "Roboto", sans-serif;
   overflow-x: hidden;
@@ -123,12 +132,12 @@ body {
 article, aside, details, figcaption, figure, dialog, footer, header, hgroup, menu, nav, section {
   display: block; }
 
-/* 1.3 - Typography */
-h1, h2, h3, h4, h5, h6 {
-  color: var(--shop-color-title);
-  margin: 0 0 13px 0;
-  font-weight: 700;
-  line-height: 1.2; }
+/*!* 1.3 - Typography *!*/
+/*h1, h2, h3, h4, h5, h6 {*/
+/*  color: var(--shop-color-title);*/
+/*  margin: 0 0 13px 0;*/
+/*  font-weight: 700;*/
+/*  line-height: 1.2; }*/
 
 h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
   color: var(--shop-color-title); }
@@ -201,7 +210,7 @@ svg {
   background-color: var(--shop-color-button);
   border: 0;
   padding: 12px 28px;
-  font-size: 13px;
+  font-size: 1.3rem;
   font-weight: 500;
   text-align: center;
   letter-spacing: 1px;

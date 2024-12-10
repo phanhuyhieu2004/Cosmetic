@@ -4,6 +4,7 @@ import './create.css';
 import 'react-quill/dist/quill.snow.css';
 import React, {useEffect, useState} from "react";
 import axios from "axios";
+import Dashboard from "../dashboard/Dashboard";
 
 function Create() {
     const user = JSON.parse(localStorage.getItem("user"));
@@ -74,12 +75,11 @@ function Create() {
     };
     console.log("Anh", files);
     console.log("Anh xem truoc", filePreviews);
+    const convertToUppercase = (productName) => {
+        return productName.replace(/(?:^|\s)\S/g, char => char.toUpperCase());
+    };
 
-    function checkSpecial(str) {
-        const specialChars = /[!@#$%^&*(),.?":{}|<>]/g;
-        return specialChars.test(str);
 
-    }
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -90,15 +90,13 @@ function Create() {
             alert("Vui lòng chọn ảnh cho tất cả các vị trí.");
             return;
         }
-        if (checkSpecial(productName)) {
-            alert("Tên sản phẩm có kí tự đặc biệt, mời nhập lại!")
-            return;
-        }
 
 
+
+const title=convertToUppercase(productName);
 
         const formData = {
-            name: productName,
+            name: title,
             brand,
             price,
             quantity,
@@ -113,11 +111,15 @@ function Create() {
         axios.post('http://localhost:8080/api/products', formData)
             .then(response => {
                 alert("Thêm sản phẩm thành công!");
-                navigate('/home');
+                navigate('/list');
             })
             .catch(error => {
-                console.error('Lỗi không thêm được sản phẩm:', error);
-            });
+                if (error.response && error.response.status === 400) {
+                    alert("Không được trùng tên sản phẩm,hãy nhập lại tên khác !");
+                } else {
+                    console.error("Lỗi:", error);
+                }
+            })
     };
 
     const modules = {
@@ -152,76 +154,8 @@ function Create() {
                     <main className="archive__content" role="main">
                         <div className="form">
                             <div className="wrapper">
-                                <div className="form-bar">
-                                    <div className="clearfix">
-                                        <img
-                                            src="https://static-00.iconduck.com/assets.00/cs-cat-admin-icon-512x512-3l4exe6y.png"
-                                            className="avatar" alt="không thể xem ảnh"/>
-                                        <div className="info-text">
-                                            <div className="fullname">
-                                                <span>{user.name}</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <ul className="action">
-                                        <li>
-                                            <Link to="/home">
-                                                <i className="fa fa-book-open-reader"></i>Trang chủ
-                                            </Link>
-                                        </li>
-                                        {user && user.role === 0 ? (
+                                <Dashboard></Dashboard>
 
-                                            <li>
-                                                <Link to="/list">
-                                                    <i className="fa fa-bars"/> Danh sách sản phẩm
-                                                </Link>
-                                            </li>) : ('')
-                                        }
-                                        {user && user.role === 0 ? (
-
-                                            <li>
-                                                <Link to="/create">
-                                                    <i className="fa fa-plus"></i> Thêm sản phẩm
-                                                </Link>
-                                            </li>
-                                        ) : ('')
-                                        }
-                                        {user && user.role === 0 ? (
-
-                                            <li>
-                                                <Link to="/statistical">
-                                                    <i className=" fa fa-chart-simple"></i> Thống kê
-                                                </Link>
-                                            </li>
-                                        ) : ('')
-                                        } {user && user.role === 0 ? (
-
-                                        <li>
-                                            <Link to="/orders/admin">
-                                                <i className="fa fa-list"></i> Quản lý đơn hàng
-                                            </Link>
-                                        </li>
-                                    ) : ('')
-                                    }
-                                        {user && user.role === 1 ? (
-
-                                            <li>
-                                                <Link to="/orders">
-                                                    <i className="fa fa-list"></i> Quản lý đơn hàng
-                                                </Link>
-                                            </li>
-                                        ) : ('')
-                                        } {user && user.role === 1 ? (
-
-                                        <li>
-                                            <Link to="/cart">
-                                                <i className="fas fa-shopping-cart"/> Giỏ hàng
-                                            </Link>
-                                        </li>
-                                    ) : ('')
-                                    }
-                                    </ul>
-                                </div>
                                 <div className="form-content">
                                     <div className="form-title">
                                         <h1>Thêm sản phẩm</h1>

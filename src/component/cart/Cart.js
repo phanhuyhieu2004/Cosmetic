@@ -2,14 +2,16 @@ import React, {useState, useEffect} from "react";
 import axios from "axios";
 import "./Cart.css";
 import {useNavigate} from "react-router-dom";
+import {useCart} from "../../CartProvider";
 
 function Cart() {
     const [cartId, setCartId] = useState(null);
-    const [cartItems, setCartItems] = useState([]);
+    const [quantity,setQuantity]=useState(0);
     const [totalPrice, setTotalPrice] = useState(0);
     const user = JSON.parse(localStorage.getItem("user"));
     const [images, setImages] = useState([]);
     const navigate = useNavigate();
+    const { cartItems, setCartItems } = useCart();
     useEffect(() => {
         axios.get('http://localhost:8080/api/images')
             .then(response => setImages(response.data))
@@ -42,6 +44,7 @@ function Cart() {
             try {
                 const response = await axios.get(`http://localhost:8080/api/cart/cartItems`, {params: {cartId}});
                 setCartItems(response.data);
+
             } catch (error) {
                 console.error("Lỗi k lấy được mục giỏ hàng", error);
             }
@@ -60,6 +63,19 @@ function Cart() {
         // lặp qua từng phần tử trong mảng và áp dụng  hàm cộng dồn sum + (item.product.price * item.quantity)), kết quả của mỗi lần lặp sẽ được truyền vào lần lặp tiếp theo.
         calculateTotalPrice();
     }, [cartItems]);
+
+    console.log('só luong',quantity);
+    const calculateQuantity = () => {
+        console.log("Giá trị cartItems:", cartItems); // Kiểm tra giá trị cartItems
+
+
+        const total = cartItems.reduce((sum, item) => sum + (item.quantity ), 0);
+        localStorage.setItem('total', total);
+        setQuantity(total);
+    };
+    useEffect(()=>{
+        calculateQuantity();
+    },[cartItems])
     const handleQuantityChange = async (itemId, newQuantity) => {
         if (newQuantity < 1) return; // Ngăn không cho số lượng giảm xuống dưới 1
 
@@ -84,12 +100,11 @@ function Cart() {
             // Cập nhật tổng tiền
             const newTotalPrice = updatedItems.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
             setTotalPrice(newTotalPrice);
-
+            calculateQuantity();
         } catch (error) {
             console.error("Lỗi k cập nhật số lượng đc", error);
         }
     };
-    console.log("mục giỏ hàng", cartItems)
 
     const handleRemoveItem = (itemId) => {
         // Xác nhận xóa sản phẩm
@@ -106,6 +121,8 @@ function Cart() {
                 // const newTotalPrice = updatedItems.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
                 // setTotalPrice(newTotalPrice);
                 fetchCartItems();
+
+
                 // Hiển thị thông báo xóa thành công
                 alert("Sản phẩm đã được xóa khỏi giỏ hàng.");
             })
@@ -123,11 +140,11 @@ function Cart() {
 
         // Kiểm tra số lượng sản phẩm có trong giỏ hàng
         const insufficientStock = cartItems.some(item => {
-            return item.quantity > item.product.quantity;
+            return item.quantity >= item.product.quantity;
         });
 // Nếu như số lượng đặt mua của sp lớn hon sl trong kho thì sẽ k đuc thanh toán
         if (insufficientStock) {
-            alert("Một hoặc nhiều sản phẩm trong giỏ hàng của bạn không đủ hàng. Vui lòng kiểm tra lại số lượng trong kho của các sp.");
+            alert("Một hoặc nhiều sản phẩm trong giỏ hàng của bạn không đủ hàng. Không thể mua được sản phẩm nếu số lượng bạn muốn mua bằng hoặc lớn hơn số hàng trong kho");
             return;
         }
 

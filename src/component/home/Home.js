@@ -6,8 +6,10 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import {Link} from "react-router-dom";
 import {Dialog} from "@mui/material";
-
+import CloseIcon from '@mui/icons-material/Close';
+import {useCart} from "../../CartProvider";
 function Home() {
+    const { setCartItems, fetchCartItems } = useCart();
     const [categories, setCategories] = useState([]);
     const [subCategories, setSubCategories] = useState([]);
     const [products, setProducts] = useState([]);
@@ -28,13 +30,16 @@ function Home() {
         setSelectedVariant(variant);
     };
 
-
+console.log('ffe',fetchCartItems);
 
     const handleThumbnailClick = (index) => setCurrenIndex(index);
 
     const [openSettingModal, setOpenSettingModal] = useState(false);
     const prevSlide = () => {
         setCurrenIndex((prevIndex) => Math.max(prevIndex - 1, 0));
+    };
+    const handleClick = () => {
+        window.scrollTo(0, 0);
     };
 
     const nextSlide = () => {
@@ -174,6 +179,8 @@ function Home() {
                 }
             });
             alert("Sản phẩm đã được thêm vào giỏ hàng");
+            fetchCartItems();
+window.location.reload();
         } catch (error) {
             console.error("Bạn cần đăng nhập để thêm sp vào giỏ hàng", error);
             alert("Đã xảy ra lỗi khi thêm sản phẩm vào giỏ hàng.");
@@ -263,11 +270,26 @@ function Home() {
                                                                     />
                                                                 )}
                                                             </picture>
+                                                            <div
+                                                                className="card-img-overlay rounded-0 product-overlay d-flex align-items-center justify-content-center">
+                                                                <ul className="list-unstyled">
+                                                                    <li><Link className="btn btn-success text-white"
+                                                                              onClick={handleClick}   to={`/product/${product.id}`}><i
+                                                                        className="far fa-heart"></i></Link></li>
+                                                                    <li><Link className="btn btn-success text-white mt-2"
+                                                                              onClick={handleClick} to={`/product/${product.id}`}><i
+                                                                        className="far fa-eye"></i></Link></li>
+                                                                    <li><Link className="btn btn-success text-white mt-2"
+                                                                              onClick={handleClick}    to={`/product/${product.id}`}><i
+                                                                        className="fas fa-cart-plus"></i></Link></li>
+                                                                </ul>
+                                                            </div>
+
                                                         </div>
                                                     </div>
                                                     <div className="product-detail">
                                                         <h3 className="title-pr">
-                                                            <Link className="quickview-product"
+                                                            <Link className="quickview-product" onClick={handleClick}
                                                                   to={`/product/${product.id}`}>
                                                                 {product.name}
                                                             </Link>
@@ -297,6 +319,7 @@ function Home() {
                                                             <section className="productDetail-information modal">
 
                                                                 <div className="container container-pd2 modal">
+
                                                                     <div className="productDetail--gallery modal">
                                                                         <div className="wrapbox-gallery modal">
                                                                             <div className="wrapbox-image modal">
@@ -349,6 +372,8 @@ function Home() {
                                                                     <div
                                                                         className="productDetailjs productDetail--content modal">
                                                                         <div className="wrapbox-detail modal">
+                                                                            <i className="fa-solid fa-x close-icon" onClick={handleCloseSettingModal}></i>
+
                                                                             <div className="product-heading">
                                                                                 <h1>{selectedProduct.name}</h1>
                                                                             </div>
@@ -397,7 +422,8 @@ function Home() {
                                                                             <div className="quantity-area">
                                                                                 <div className="quantity-title">
                                                                                     Số lượng : Đang
-                                                                                    có {selectedProduct.quantity} sản phẩm trong
+                                                                                    có {selectedProduct.quantity} sản
+                                                                                    phẩm trong
                                                                                     kho
                                                                                 </div>
                                                                                 <div className="box-quantity">
@@ -426,7 +452,8 @@ function Home() {
                                                                                              className="icon icon--plus"
                                                                                              viewBox="0 0 10 10"
                                                                                              role="presentation">
-                                                                                            <path d="M6 4h4v2H6v4H4V6H0V4h4V0h2v4z"></path>
+                                                                                            <path
+                                                                                                d="M6 4h4v2H6v4H4V6H0V4h4V0h2v4z"></path>
                                                                                         </svg>
                                                                                     </button>
                                                                                 </div>
@@ -434,12 +461,17 @@ function Home() {
                                                                                     <button
                                                                                         className={`btn-addtocart ${selectedProduct?.quantity <= 0 ? "disable" : "enable"}`}
                                                                                         onClick={addToCart}
-                                                                                        disabled={selectedProduct?.quantity <= 0}>
-                                                                                        <span>{selectedProduct?.quantity > 0 ? "THÊM VÀO GIỎ" : "HẾT HÀNG"}</span>
+                                                                                        disabled={selectedProduct?.quantity <= 1}>
+                                                                                        <span>{selectedProduct?.quantity > 1 ? "THÊM VÀO GIỎ" : "HẾT HÀNG"}</span>
                                                                                     </button>
                                                                                 </div>
                                                                             </div>
-
+                                                                            <div className="product-desc">
+                                                                                <Link className="productdetail-link"
+                                                                                      to={`/product/${selectedProduct.id}`}>
+                                                                                    Xem chi tiết sản phẩm
+                                                                                </Link>
+                                                                            </div>
                                                                         </div>
                                                                     </div>
                                                                 </div>

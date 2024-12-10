@@ -1,6 +1,7 @@
 import {Link, useNavigate, useParams} from "react-router-dom";
 import React, {useState} from "react";
 import axios from "axios";
+import Dashboard from "../dashboard/Dashboard";
 
 
 function CreateVariant() {
@@ -42,87 +43,30 @@ function CreateVariant() {
     return(
         <>
             <main>
+                <div className="breadcrumb-shop">
+                    <div className="container container-pd1">
+                        <div className="breadcrumb-list">
+                            <ol className="breadcrumb breadcrumb-arrows">
+                                <li><a href="/home"><span>Trang chủ</span></a></li>
+                                <li><a href="/list"><span>Quản lý sản phẩm</span></a></li>
+
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+
                 <meta name="robots" content="noindex, nofollow"/>
                 <section className="archive__page page-single">
                     <div className="container">
                         <main className="archive__content" role="main">
                             <div className="form">
                                 <div className="wrapper">
-                                    <div className="form-bar">
-                                        <div className="clearfix">
-                                            <img
-                                                src="https://static-00.iconduck.com/assets.00/cs-cat-admin-icon-512x512-3l4exe6y.png"
-                                                className="avatar" alt="không thể xem ảnh"/>
-                                            <div className="info-text">
-                                                <div className="fullname">
-                                                    <span>{user.name}</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <ul className="action">
-                                            <li>
-                                                <Link to="/home">
-                                                    <i className="fa fa-book-open-reader"></i>Trang chủ
-                                                </Link>
-                                            </li>
-                                            {user && user.role === 0 ? (
-
-                                                <li>
-                                                    <Link to="/list">
-                                                        <i className="fa fa-bars"/> Danh sách sản phẩm
-                                                    </Link>
-                                                </li>) : ('')
-                                            }
-                                            {user && user.role === 0 ? (
-
-                                                <li>
-                                                    <Link to="/create">
-                                                        <i className="fa fa-plus"></i> Thêm sản phẩm
-                                                    </Link>
-                                                </li>
-                                            ) : ('')
-                                            }
-                                            {user && user.role === 0 ? (
-
-                                                <li>
-                                                    <Link to="/statistical">
-                                                        <i className=" fa fa-chart-simple"></i> Thống kê
-                                                    </Link>
-                                                </li>
-                                            ) : ('')
-                                            } {user && user.role === 0 ? (
-
-                                            <li>
-                                                <Link to="/orders/admin">
-                                                    <i className="fa fa-list"></i> Quản lý đơn hàng
-                                                </Link>
-                                            </li>
-                                        ) : ('')
-                                        }
-                                            {user && user.role === 1 ? (
-
-                                                <li>
-                                                    <Link to="/orders">
-                                                        <i className="fa fa-list"></i> Quản lý đơn hàng
-                                                    </Link>
-                                                </li>
-                                            ) : ('')
-                                            } {user && user.role === 1 ? (
-
-                                            <li>
-                                                <Link to="/cart">
-                                                    <i className="fas fa-shopping-cart"/> Giỏ hàng
-                                                </Link>
-                                            </li>
-                                        ) : ('')
-                                        }
-                                        </ul>
-                                    </div>
+                                    <Dashboard></Dashboard>
                                     <div className="form-content">
                                         <div className="form-title">
                                             <h1>Thêm biến thể của {name}</h1>
                                         </div>
-                                        <Link to={`/variants/${id}/${name}`}>
+                                        <Link to={`/variants/${id}/${name}`} onClick={window.scroll(0,0)}>
                                             <button className="btn-add">
                                                 Danh sách biến thể
                                             </button>

@@ -3,6 +3,7 @@ import axios from "axios";
 import {Link} from "react-router-dom";
 import {Pagination, Tooltip} from "@mui/material";
 import {Close, Delete, Done, Edit, ExitToAppOutlined, ListAlt, RemoveRedEyeOutlined} from "@mui/icons-material";
+import Dashboard from "../dashboard/Dashboard";
 
 function OrdersAdmin() {
     const user = JSON.parse(localStorage.getItem("user"));
@@ -60,139 +61,89 @@ function OrdersAdmin() {
     return(
         <>
             <main>
+                <div className="breadcrumb-shop">
+                    <div className="container container-pd1">
+                        <div className="breadcrumb-list">
+                            <ol className="breadcrumb breadcrumb-arrows">
+                                <li><a href="/home"><span>Trang chủ</span></a></li>
+                                <li><a href="/list"><span>Quản lý sản phẩm</span></a></li>
+                                <li><a href="/orders/admin"><span>Quản lý đơn hàng của khách hàng</span></a></li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+
                 <meta name="robots" content="noindex, nofollow"/>
                 <section className="archive__page page-single">
                     <div className="container">
                         <main className="archive__content" role="main">
                             <div className="form">
                                 <div className="wrapper">
-                                    <div className="form-bar">
-                                        <div className="clearfix">
-                                            <img
-                                                src="https://static-00.iconduck.com/assets.00/cs-cat-admin-icon-512x512-3l4exe6y.png"
-                                                className="avatar" alt="không thể xem ảnh"/>
-                                            <div className="info-text">
-                                                <div className="fullname">
-                                                    <span>{user.name}</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <ul className="action">
-                                            <li>
-                                                <Link to="/home">
-                                                    <i className="fa fa-book-open-reader"></i>Trang chủ
-                                                </Link>
-                                            </li>
-                                            {user && user.role === 0 ? (
-
-                                                <li>
-                                                    <Link to="/list">
-                                                        <i className="fa fa-bars"/> Danh sách sản phẩm
-                                                    </Link>
-                                                </li>) : ('')
-                                            }
-                                            {user && user.role === 0 ? (
-
-                                                <li>
-                                                    <Link to="/create">
-                                                        <i className="fa fa-plus"></i> Thêm sản phẩm
-                                                    </Link>
-                                                </li>
-                                            ) : ('')
-                                            }
-                                            {user && user.role === 0 ? (
-
-                                                <li>
-                                                    <Link to="/statistical">
-                                                        <i className=" fa fa-chart-simple"></i> Thống kê
-                                                    </Link>
-                                                </li>
-                                            ) : ('')
-                                            } {user && user.role === 0 ? (
-
-                                            <li>
-                                                <Link to="/orders/admin">
-                                                    <i className="fa fa-list"></i> Quản lý đơn hàng
-                                                </Link>
-                                            </li>
-                                        ) : ('')
-                                        }
-                                            {user && user.role === 1 ? (
-
-                                                <li>
-                                                    <Link to="/orders">
-                                                        <i className="fa fa-list"></i> Quản lý đơn hàng
-                                                    </Link>
-                                                </li>
-                                            ) : ('')
-                                            } {user && user.role === 1 ? (
-
-                                            <li>
-                                                <Link to="/cart">
-                                                    <i className="fas fa-shopping-cart"/> Giỏ hàng
-                                                </Link>
-                                            </li>
-                                        ) : ('')
-                                        }
-                                        </ul>
-                                    </div>
+                                    <Dashboard></Dashboard>
                                     <div className="form-content">
                                         <div className="form-title">
                                             <h1>Đơn hàng của tài khoản {user.name}</h1>
                                         </div>
+                                        <div className={'orders-detail'}>
+                                            <div className={'orders-info'}>
+                                                <table style={{border: "5px solid black", margin: "50px auto"}}>
+                                                    <thead>
+                                                    <tr>
+                                                        <th>Mã Đơn</th>
+                                                        <th>Ngày tạo</th>
+                                                        <th>Trạng thái thanh toán</th>
+                                                        <th>Trạng thái vận chuyển</th>
+                                                        <th>Tổng đơn</th>
+                                                        <th>Xem chi tiet</th>
+                                                        <th>Hành động</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    {currentOrders
 
-                                        <table style={{border: "5px solid black", margin: "50px auto"}}>
-                                            <thead>
-                                            <tr>
-                                                <th>Mã Đơn</th>
-                                                <th>Ngày tạo</th>
-                                                <th>Trạng thái thanh toán</th>
-                                                <th>Trạng thái vận chuyển</th>
-                                                <th>Tổng đơn</th>
-                                                <th>Xem chi tiet</th>
-                                                <th>Hành động</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            {currentOrders
 
-
-                                                .map(item => (
-                                                    <tr key={item.id}>
-                                                        <td>{item.id}</td>
-                                                        <td>{item.createdAt[2]}-{item.createdAt[1]}-{item.createdAt[0]}</td>
-                                                        <td>{item.paymentStatus}</td>
-                                                        <td>{item.shippingStatus}</td>
-                                                        <td>{((item.totalPrice) * 1000).toLocaleString('vi-VN', {
-                                                            style: 'currency',
-                                                            currency: 'VND'
-                                                        })}</td>
-                                                        <td><Link to={`/order/admin/${item.id}`}>Xem chi tiet</Link></td>
-                                                        <td style={{display: "flex", borderBottom: 'none'}}>
-                                                            <Tooltip title="Hoàn thành">
+                                                        .map(item => (
+                                                            <tr key={item.id}>
+                                                                <td>{item.id}</td>
+                                                                <td>{item.createdAt[2]}-{item.createdAt[1]}-{item.createdAt[0]}</td>
+                                                                <td>{item.paymentStatus}</td>
+                                                                <td>{item.shippingStatus}</td>
+                                                                <td>{((item.totalPrice) * 1000).toLocaleString('vi-VN', {
+                                                                    style: 'currency',
+                                                                    currency: 'VND'
+                                                                })}</td>
+                                                                <td><Link to={`/order/admin/${item.id}`}>Xem chi
+                                                                    tiet</Link>
+                                                                </td>
+                                                                <td style={{display: "flex", borderBottom: 'none',justifyContent:'center'}}>
+                                                                    <Tooltip title="Hoàn thành">
         <span onClick={() => updateOrderStatus(item.id)}>
             <Done/>
         </span>
-                                                            </Tooltip>
-                                                            <Tooltip title="Hủy">
+                                                                    </Tooltip>
+                                                                    <Tooltip title="Hủy">
         <span onClick={() => updateOrderStatusFail(item.id)}>
             <Close/>
         </span>
-                                                            </Tooltip>
+                                                                    </Tooltip>
 
-                                                        </td>
+                                                                </td>
 
-                                                    </tr>
-                                                ))}
-                                            </tbody>
-                                        </table>
-                                        <div style={{marginLeft: '400px'}}>
-                                            <Pagination
-                                                count={Math.ceil(orders.length / orderPerPage)}
-                                                page={currentPage}
-                                                onChange={handlePageChange}
-                                            />
+                                                            </tr>
+                                                        ))}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                           <div className={'pagination'}>
+                                               <Pagination
+                                                   count={Math.ceil(orders.length / orderPerPage)}
+                                                   page={currentPage}
+                                                   onChange={handlePageChange}
+                                               />
+                                           </div>
                                         </div>
+
+
                                     </div>
                                 </div>
                             </div>

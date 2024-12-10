@@ -15,17 +15,20 @@ function Contact() {
     };
     return(
         <>
-            {/*Đây là thành phần dùng để tải Google Maps API script*/}
-            <LoadScript googleMapsApiKey="AIzaSyDgiP2qG6hDIfPO3aZ-qP_M_fhp_wx4sX8">
-                <GoogleMap
-                    mapContainerStyle={containerStyle}
-                    center={center}
-                    zoom={10}
-                >
-                    <Marker position={center} />
-                </GoogleMap>
-            </LoadScript>
-        </>
-    )
-}
-export default Contact;
+            <main className="main-content">
+
+                {/*Đây là thành phần dùng để tải Google Maps API script*/}
+                <LoadScript googleMapsApiKey="AIzaSyDgiP2qG6hDIfPO3aZ-qP_M_fhp_wx4sX8">
+                    <GoogleMap
+                        mapContainerStyle={containerStyle}
+                        center={center}
+                        zoom={10}
+                    >
+                        <Marker position={center}/>
+                    </GoogleMap>
+                </LoadScript>
+            </main>
+            </>
+            )
+            }
+            export default Contact;

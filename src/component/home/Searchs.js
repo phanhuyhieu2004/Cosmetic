@@ -121,20 +121,10 @@ setSearchTerm(searchTerm);
     return (
         <main className="main-content">
             <div className="layout-productDetail">
-                <div className="breadcrumb-shop">
-                    <div className="container container-pd1">
-                        <div className="breadcrumb-list">
-                            <ol className="breadcrumb breadcrumb-arrows">
-                                <li><a href="/home"><span>Trang chủ</span></a></li>
-                                <li><a href="/home"><span style={{ textTransform: "uppercase", fontWeight: "600" }}>b</span></a></li>
-                            </ol>
-                        </div>
-                    </div>
-                </div>
                 <section className="product product-1">
                     <div className="container container-product">
                         <div className="product-head">
-                            <h2 className="title">Kết quả tìm kiếm cho "{searchTerm}"</h2>
+                            <p className="title" style={{color:'#000'}}>Kết quả tìm kiếm cho <span>"{searchTerm}"</span></p>
                         </div>
                         <div className="product-content-1">
                             <div className="list product-list-1">
@@ -327,8 +317,8 @@ setSearchTerm(searchTerm);
                                                 <button
                                                     className={`btn-addtocart ${selectedProduct?.quantity <= 0 ? "disable" : "enable"}`}
                                                     onClick={addToCart}
-                                                    disabled={selectedProduct?.quantity <= 0}>
-                                                    <span>{selectedProduct?.quantity > 0 ? "THÊM VÀO GIỎ" : "HẾT HÀNG"}</span>
+                                                    disabled={selectedProduct?.quantity <= 1}>
+                                                    <span>{selectedProduct?.quantity > 1 ? "THÊM VÀO GIỎ" : "HẾT HÀNG"}</span>
                                                 </button>
                                             </div>
                                         </div>

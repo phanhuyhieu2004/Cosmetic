@@ -23,34 +23,41 @@ import UpdateVariant from "./component/update/UpdateVariant";
 import Statistical from "./component/statistical/Statistical";
 import OrdersAdmin from "./component/order/OrdersAdmin";
 import OrderAdmin from "./component/order/OrderAdmin";
+import Todo from "./component/todo/Todo";
+import {CartProvider} from "./CartProvider";
 
 
 function App() {
     return (
-        <div className="App" style={{ display: 'flex',
-            flexDirection: 'column'}}>
-            <Routes>
+        <CartProvider>
+            <div className="App" style={{
+                display: 'flex',
+                flexDirection: 'column'
+            }}>
 
-                <Route element={<PrivateRoute redirectTo="/login"/>}>
-                    <Route
-                        path="/create"
-                        element={
-                            <>
-                                <Header/>
-                                <Create/>
-                                <Footer/>
-                            </>
-                        }
-                    />   <Route
-                        path="/statistical"
-                        element={
-                            <>
-                                <Header/>
-                                <Statistical/>
-                                <Footer/>
-                            </>
-                        }
-                    /> <Route
+                <Routes>
+
+                    <Route element={<PrivateRoute redirectTo="/login"/>}>
+                        <Route
+                            path="/create"
+                            element={
+                                <>
+                                    <Header/>
+                                    <Create/>
+                                    <Footer/>
+                                </>
+                            }
+                        />
+                        <Route
+                            path="/statistical"
+                            element={
+                                <>
+                                    <Header/>
+                                    <Statistical/>
+                                    <Footer/>
+                                </>
+                            }
+                        /> <Route
                         path="/create/:id/:name"
                         element={
                             <>
@@ -87,17 +94,17 @@ function App() {
                             </>
                         }
                     />
-                    <Route
-                        path="/cart"
-                        element={
-                            <>
-                                <Header/>
-                                <Cart/>
-                                <Footer/>
+                        <Route
+                            path="/cart"
+                            element={
+                                <>
+                                    <Header/>
+                                    <Cart/>
+                                    <Footer/>
 
-                            </>
-                        }
-                    /><Route
+                                </>
+                            }
+                        /><Route
                         path="/list"
                         element={
                             <>
@@ -118,94 +125,80 @@ function App() {
                             </>
                         }
                     /> <Route
-                    path="/orders"
-                    element={
-                        <>
-                            <Header/>
-                            <Orders/>
-                            <Footer/>
+                        path="/orders"
+                        element={
+                            <>
+                                <Header/>
+                                <Orders/>
+                                <Footer/>
 
-                        </>
-                    }
-                />
-                    <Route
-                    path="/order/:id"
-                    element={
-                        <>
-                            <Header/>
-                            <Order/>
-                            <Footer/>
-
-                        </>
-                    }
-                /> <Route
-                    path="/order/admin/:id"
-                    element={
-                        <>
-                            <Header/>
-                            <OrderAdmin/>
-                            <Footer/>
-
-                        </>
-                    }
-                />
+                            </>
+                        }
                     />
-                </Route>
+                        <Route
+                            path="/order/:id"
+                            element={
+                                <>
+                                    <Header/>
+                                    <Order/>
+                                    <Footer/>
+
+                                </>
+                            }
+                        /> <Route
+                        path="/order/admin/:id"
+                        element={
+                            <>
+                                <Header/>
+                                <OrderAdmin/>
+                                <Footer/>
+
+                            </>
+                        }
+                    />
+                        />
+                    </Route>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-                <Route path="/home" element={
-                    <>
-                        <Header/>
-                        <Home/>
-                        <Footer/>
-                    </>
-                }
-                />
-
-
-                <Route
-                    path="/product/:id"
-                    element={
+                    <Route path="/home" element={
                         <>
                             <Header/>
-                            <Product/>
+                            <Home/>
                             <Footer/>
                         </>
                     }
-                />
-                <Route
-                    path="/login"
-                    element={
-                        <>
-                            <Header/>
-                            <Login/>
-                            <Footer/>
-                        </>
-                    }
-                />
+                    />
 
-                <Route
-                    path="/register"
-                    element={
-                        <>
-                            <Header/>
-                            <Register/>
-                            <Footer/>
-                        </>
-                    }
-                />    <Route
+
+                    <Route
+                        path="/product/:id"
+                        element={
+                            <>
+                                <Header/>
+                                <Product/>
+                                <Footer/>
+                            </>
+                        }
+                    />
+                    <Route
+                        path="/login"
+                        element={
+                            <>
+                                <Login/>
+                            </>
+                        }
+                    />
+
+                    <Route
+                        path="/register"
+                        element={
+                            <>
+
+                                <Register/>
+
+                            </>
+                        }
+                    /> <Route
                     path="/map"
                     element={
                         <>
@@ -224,19 +217,30 @@ function App() {
                         </>
                     }
                 />
-                <Route
-                    path="/products/:id/:name"
-                    element={
-                        <>
-                            <Header/>
-                            <Products/>
-                            <Footer/>
-                        </>
-                    }
-                />
+                    <Route
+                        path="/test"
+                        element={
+                            <>
+                                <Todo/>
+                            </>
+                        }
+                    />
+                    <Route
+                        path="/products/:id/:name"
+                        element={
+                            <>
+                                <Header/>
+                                <Products/>
+                                <Footer/>
+                            </>
+                        }
+                    />
 
-            </Routes>
-        </div>
+                </Routes>
+
+            </div>
+        </CartProvider>
+
     );
 }
 
